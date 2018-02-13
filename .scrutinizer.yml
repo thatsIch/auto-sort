@@ -1,0 +1,16 @@
+checks:
+    java: true
+
+filter:
+    excluded_paths:
+        - test/*
+
+build:
+    environment:
+        sdkman:
+            - java@9.0.0-zulu
+            - maven
+
+    tests:
+        override:
+
