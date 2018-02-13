@@ -12,3 +12,6 @@
 
 # include maven files
 !pom.xml
+
+# include build related files
+!.circleci
