@@ -14,7 +14,7 @@ build:
     tests:
         override:
             -
-                command: mvn clean package
+                command: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
                 coverage:
                     file: "target"
                     format: "jacoco"
