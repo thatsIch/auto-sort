@@ -16,5 +16,5 @@ build:
             -
                 command: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
                 coverage:
-                    file: "target"
+                    file: "target/jacoco.exec"
                     format: "jacoco"
