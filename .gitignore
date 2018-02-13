@@ -1,0 +1,14 @@
+# exclude all
+/*
+
+# include projects
+!src/
+
+# include README.md
+!README.md
+
+# include git important files
+!.gitignore
+
+# include maven files
+!pom.xml
