@@ -13,4 +13,8 @@ build:
 
     tests:
         override:
-
+            -
+                command: mvn clean package
+                coverage:
+                    file: "target"
+                    format: "jacoco"
