@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class DefaultDirectoryProcessor {
 	private static final String SHORT_COMMAND = null;
@@ -32,41 +33,50 @@ public class DefaultDirectoryProcessor {
 		return Option.builder(SHORT_COMMAND)
 				.longOpt(LONG_COMMAND)
 				.desc(DESCRIPTION)
-				.hasArg()
+				.hasArgs()
+				.numberOfArgs(2)
 				.optionalArg(true)
 				.valueSeparator(' ')
 				.argName(ARG_NAME)
 				.build();
 	}
 
-	public void processCommandLine(CommandLine cl) {
+	public Path processCommandLine(CommandLine cl) {
 		if (cl.hasOption(LONG_COMMAND)) {
 			final String[] filterArgs = cl.getOptionValues(LONG_COMMAND);
-			if (filterArgs.length > MAX_ARGS) {
+
+			// we only get 'default' as command thus we want to print the default directory
+			if (filterArgs == null) {
+				final String suggestion = Paths.get("").toAbsolutePath().toString();
+				final String defaultDirectory = preferences.get(PREF_KEY, suggestion);
+				if (suggestion.equals(defaultDirectory)) {
+					LOGGER.warn("Default directory has yet to be set. Defaulting to current working directory. Use the option 'default <directory>'.");
+				}
+				final Path defaultDirectoryPath = Paths.get(defaultDirectory);
+
+				LOGGER.info("Default directory: " + defaultDirectoryPath.toString());
+
+				return defaultDirectoryPath;
+			// guard against invalid inputs
+			} else if (filterArgs.length > MAX_ARGS) {
 				this.helpPrinter.printHelp();
+
+				throw new IllegalArgumentException("At least '" + MAX_ARGS + "' arguments required but given '" + filterArgs.length + "' with '" + Arrays.toString(filterArgs) + "'.");
 			}
+			// we have exactly the required directory
+			// we want to set the directory
 			else {
 				final String maybeDirectory = filterArgs[0];
+				final Path defaultDirectoryPath = Paths.get(maybeDirectory).toAbsolutePath();
+				final String stringified = defaultDirectoryPath.toString();
+				preferences.put(PREF_KEY, stringified);
 
-				// we want to set the directory
-				if (maybeDirectory != null) {
-					final Path defaultDirectoryPath = Paths.get(maybeDirectory);
-					final String stringified = defaultDirectoryPath.toAbsolutePath().toString();
-					preferences.put(PREF_KEY, stringified);
+				LOGGER.info("Stored '" + stringified + "' as default directory.");
 
-					LOGGER.info("Stored '" + stringified + "' as default directory.");
-				// we want to print the default directory
-				} else {
-					final String suggestion = Paths.get("").toAbsolutePath().toString();
-					final String defaultDirectory = preferences.get(PREF_KEY, suggestion);
-					if (suggestion.equals(defaultDirectory)) {
-						LOGGER.warn("Default directory has yet to be set. Defaulting to current working directory. Use the option 'default <directory>'.");
-					}
-					final Path defaultDirectoryPath = Paths.get(defaultDirectory);
-
-					LOGGER.info("Default directory: " + defaultDirectoryPath.toString());
-				}
+				return defaultDirectoryPath;
 			}
 		}
+
+		return null;
 	}
 }
