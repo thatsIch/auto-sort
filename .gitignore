@@ -4,8 +4,9 @@
 # include projects
 !src/
 
-# include README.md
+# include README.md and meta files
 !README.md
+!LICENSE
 
 # include git important files
 !.gitignore
