@@ -50,30 +50,30 @@ public class VideoProcessor {
 			targetToDestination.forEach((key, dest) -> {
 				if (fileName.startsWith(key)) {
 					try {
-						System.out.println(fileName);
-						System.out.println("\tDestination: " + dest);
+						LOGGER.info(fileName);
+						LOGGER.info("\tDestination: " + dest);
 						final Path existing = getResolvedExistingPath(dest, fileName);
 						Files.move(file, existing);
-						System.out.println("\tMoved.");
+						LOGGER.info("\tMoved.");
 					} catch (FileAlreadyExistsException e) {
 						final Path existing = dest.resolve(fileName);
-						System.out.println("\tAlready existing.");
-						System.out.println("\tChecking for file size.");
+						LOGGER.info("\tAlready existing.");
+						LOGGER.info("\tChecking for file size.");
 						try {
 							final long sourceSize = Files.size(existing);
 							final long targetSize = Files.size(file);
 
 							// in case the files are called the same and have the same size we can argue, that it is very likely that it is the same video content
 							if (sourceSize == targetSize) {
-								System.out.println("\t\tFound same size: deleting source file.");
+								LOGGER.info("\t\tFound same size: deleting source file.");
 								Files.delete(file);
-								System.out.println("Deleted.");
+								LOGGER.info("Deleted.");
 							} else {
-								System.out.println("\t\tFound different size: starting unification.");
+								LOGGER.info("\t\tFound different size: starting unification.");
 								final String uniqueFileName = fileName.replace(".mp4", " " + randomUUID().toString() + ".mp4");
-								System.out.println("\t\tUnique name: " + uniqueFileName);
+								LOGGER.info("\t\tUnique name: " + uniqueFileName);
 								final Path moved = Files.move(file, dest.resolve(uniqueFileName));
-								System.out.println("\t\tMoved: " + moved);
+								LOGGER.info("\t\tMoved: " + moved);
 							}
 						} catch (IOException el) {
 							LOGGER.error("\tDeduplication failed.", el);
