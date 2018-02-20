@@ -14,9 +14,7 @@ public class HelpPrinter {
 	}
 
 	public void printHelp() {
-		formatter.setOptionComparator(null);
-		formatter.setWidth(140);
-		formatter.printHelp("autosort", options);
+		this.printOptions(this.options);
 	}
 
 	public void printOptions(Options options) {
