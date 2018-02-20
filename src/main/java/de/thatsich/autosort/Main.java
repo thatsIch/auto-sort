@@ -39,12 +39,6 @@ public class Main {
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
 
-		// TODO merge them with optional arguments like --default to retrieve or --default D:\Download to set
-//		final String setDefaultDirectoryKey = "set-default-directory";
-//		options.addOption(null, setDefaultDirectoryKey, true, "set default destination the application will be called on.");
-//		final String getDefaultDirectoryKey = "get-default-directory";
-//		options.addOption(null, getDefaultDirectoryKey, false, "retrieves stored information upon the default directory. can be set with 'set-default-directory'");
-
 		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
 		options.addOption(defaultDirectoryProcessor.constructOption());
 
