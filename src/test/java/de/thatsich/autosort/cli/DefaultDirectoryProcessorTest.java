@@ -48,7 +48,7 @@ class DefaultDirectoryProcessorTest {
 
 		final Option constructedOption = defaultDirectoryProcessor.constructOption();
 
-		System.out.println(constructedOption);
+		Assertions.assertNotNull(constructedOption);
 	}
 
 	@Test

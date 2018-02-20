@@ -1,7 +1,9 @@
 package de.thatsich.autosort.cli;
 
+import de.thatsich.autosort.PreferenceManager;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +13,6 @@ import javax.json.JsonReader;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.StringJoiner;
-import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
 public class FilterProcessor {
@@ -44,9 +45,9 @@ public class FilterProcessor {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final HelpPrinter helpPrinter;
-	private final Preferences preferences;
+	private final PreferenceManager preferences;
 
-	public FilterProcessor(final HelpPrinter helpPrinter, Preferences preferences) {
+	public FilterProcessor(final HelpPrinter helpPrinter, PreferenceManager preferences) {
 		this.helpPrinter = helpPrinter;
 		this.preferences = preferences;
 	}
@@ -63,39 +64,53 @@ public class FilterProcessor {
 
 	public void processCommandLine(CommandLine cl) {
 		if (cl.hasOption(LONG_COMMAND)) {
+			// can never be null because the cl filters that case
 			final String[] filterArgs = cl.getOptionValues(LONG_COMMAND);
+
+			final Option option = this.constructOption();
+			final Options options = new Options();
+			options.addOption(option);
+
 			if (filterArgs.length > MAX_ARGS) {
-				this.helpPrinter.printHelp();
+				helpPrinter.printOptions(options);
+
+				throw new IllegalArgumentException("filter commands requires specific arguments with max '"+MAX_ARGS+"' arguments.");
 			}
-			else {
-				final String subCommand = filterArgs[0];
-				final String rawFilters = this.preferences.get(PREF_KEY, "{}");
-				final JsonReader reader = Json.createReader(new StringReader(rawFilters));
-				final JsonObject jsonObject = reader.readObject();
-				if (subCommand.equals(ADD_ARGS[0])) {
-					final String regex = filterArgs[1];
-					final String destinationOrAlias = filterArgs[2];
 
-					final String persistable =  Json.createObjectBuilder(jsonObject)
-							.add(regex, destinationOrAlias)
-							.build()
-							.toString();
+			final String subCommand = filterArgs[0];
+			final String rawFilters = this.preferences.get(PREF_KEY, "{}");
+			final JsonReader reader = Json.createReader(new StringReader(rawFilters));
+			final JsonObject jsonObject = reader.readObject();
+			if (subCommand.equals(ADD_ARGS[0])) {
+				// should check length of args
+				// should check if regex
+				// should check if destination is either path or alias
+				final String regex = filterArgs[1];
+				final String destinationOrAlias = filterArgs[2];
 
-					this.preferences.put(PREF_KEY, persistable);
-				} else if (subCommand.equals(DEL_ARGS[0])) {
-					final String regex = filterArgs[1];
+				final String persistable =  Json.createObjectBuilder(jsonObject)
+						.add(regex, destinationOrAlias)
+						.build()
+						.toString();
 
-					final String persistable = Json.createObjectBuilder(jsonObject)
-							.remove(regex)
-							.build()
-							.toString();
+				this.preferences.put(PREF_KEY, persistable);
+			} else if (subCommand.equals(DEL_ARGS[0])) {
+				// should check length of args
+				// should check if regex
+				final String regex = filterArgs[1];
 
-					this.preferences.put(PREF_KEY, persistable);
-				} else if (subCommand.equals(LIST_ARGS[0])) {
-					jsonObject.forEach((regex, desintation) -> {
-						LOGGER.info(regex + " -> " + desintation);
-					});
-				}
+				final String persistable = Json.createObjectBuilder(jsonObject)
+						.remove(regex)
+						.build()
+						.toString();
+				
+				this.preferences.put(PREF_KEY, persistable);
+			} else if (subCommand.equals(LIST_ARGS[0])) {
+				jsonObject.forEach((regex, desintation) -> LOGGER.info(regex + " -> " + desintation));
+			} else {
+				helpPrinter.printOptions(options);
+
+				throw new UnsupportedOperationException("unknown sub-command '"+subCommand+"' was given but should be one of the supported ones.");
 			}
 		}
 	}

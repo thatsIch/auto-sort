@@ -51,7 +51,7 @@ public class Main {
 		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, preferences);
 		options.addOption(aliasProcessor.constructOption());
 
-		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, preferences);
+		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, preferenceManager);
 		options.addOption(filterProcessor.constructOption());
 
 		options.addOption("h", "help", false, "displays help. overrides any other command.");

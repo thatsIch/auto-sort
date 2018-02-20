@@ -18,4 +18,10 @@ public class HelpPrinter {
 		formatter.setWidth(140);
 		formatter.printHelp("autosort", options);
 	}
+
+	public void printOptions(Options options) {
+		formatter.setOptionComparator(null);
+		formatter.setWidth(140);
+		formatter.printHelp("autosort", options);
+	}
 }
