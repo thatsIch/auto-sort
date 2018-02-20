@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
@@ -50,30 +51,30 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_noArgs_shouldThrow() throws ParseException, BackingStoreException {
+	void processCommandLine_noArgs_doesNothing() throws ParseException {
 		// given
 
 		// when
-		final String[] args = {"--default"};
+		final String[] args = {};
 		final CommandLine cl = argsParser.parse(options, args);
-		aliasProcessor.processCommandLine(cl);
+		final Void processed = aliasProcessor.processCommandLine(cl);
 
 		// then
-		Assertions.assertTrue(this.preferences.keys().length == 1);
-		Assertions.assertEquals("{}", this.preferences.get("filters", "{}"));
+		Assertions.assertNull(processed);
 	}
 
+	/**
+	 * This is generally guarded by the CLI
+	 */
 	@Test
-	void processCommandLine_getter_shouldWork() throws ParseException, BackingStoreException {
+	void processCommandLine_onlyFlag_shouldNotWork() {
 		// given
 
 		// when
-		final String[] args = {"--default"};
-		final CommandLine cl = argsParser.parse(options, args);
-		aliasProcessor.processCommandLine(cl);
+		final String[] args = {"--alias"};
+		final Executable process = () -> argsParser.parse(options, args);
 
 		// then
-		Assertions.assertTrue(this.preferences.keys().length == 1);
-		Assertions.assertEquals("{}", this.preferences.get("filters", "{}"));
+		Assertions.assertThrows(MissingArgumentException.class, process);
 	}
 }
