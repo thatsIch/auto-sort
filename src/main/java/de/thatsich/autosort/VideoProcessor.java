@@ -3,6 +3,8 @@ package de.thatsich.autosort;
 import de.thatsich.autosort.parser.AliasParser;
 import de.thatsich.autosort.parser.PropertiesLoader;
 import de.thatsich.autosort.parser.TargetDestinationParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -26,6 +28,9 @@ import static java.util.UUID.randomUUID;
  * @since 1.0-SNAPSHOT
  */
 public class VideoProcessor {
+
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	public void process(Path workingDirectory) throws IOException {
 		final List<Path> videos = Files.walk(workingDirectory, 1)
 			.filter(Files::isRegularFile)
@@ -70,14 +75,11 @@ public class VideoProcessor {
 								final Path moved = Files.move(file, dest.resolve(uniqueFileName));
 								System.out.println("\t\tMoved: " + moved);
 							}
-						} catch (IOException e1) {
-							System.out.println("\tDeduplication failed.");
-							e1.printStackTrace();
+						} catch (IOException el) {
+							LOGGER.error("\tDeduplication failed.", el);
 						}
-
 					} catch (IOException e) {
-						System.out.println("Failed.");
-						e.printStackTrace();
+						LOGGER.error("Failed", e);
 					}
 				}
 			});
