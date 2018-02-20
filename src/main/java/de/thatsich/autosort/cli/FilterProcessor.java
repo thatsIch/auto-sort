@@ -103,9 +103,10 @@ public class FilterProcessor {
 						.remove(regex)
 						.build()
 						.toString();
-				
+
 				this.preferences.put(PREF_KEY, persistable);
 			} else if (subCommand.equals(LIST_ARGS[0])) {
+				// should check length of args
 				jsonObject.forEach((regex, desintation) -> LOGGER.info(regex + " -> " + desintation));
 			} else {
 				helpPrinter.printOptions(options);
