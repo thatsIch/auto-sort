@@ -41,6 +41,8 @@ public class AliasProcessor {
 			.add(Arrays.stream(LIST_ARGS)
 					.collect(Collectors.joining(" ")))
 			.toString();
+	private static final String PREF_KEY = "aliases";
+	private static final String PREF_DEFAULT = "{}";
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -71,7 +73,7 @@ public class AliasProcessor {
 			}
 			else {
 				final String subCommand = aliasArgs[0];
-				final String rawAliases = this.preferences.get("aliases", "{}");
+				final String rawAliases = this.preferences.get(PREF_KEY, PREF_DEFAULT);
 				final JsonReader reader = Json.createReader(new StringReader(rawAliases));
 				final JsonObject jsonObject = reader.readObject();
 				if (subCommand.equals(ADD_ARGS[0])) {
@@ -83,7 +85,7 @@ public class AliasProcessor {
 							.build()
 							.toString();
 
-					this.preferences.put("aliases", persistable);
+					this.preferences.put(PREF_KEY, persistable);
 				} else if (subCommand.equals(DEL_ARGS[0])) {
 					final String alias = aliasArgs[1];
 
@@ -92,7 +94,7 @@ public class AliasProcessor {
 							.build()
 							.toString();
 
-					this.preferences.put("aliases", persistable);
+					this.preferences.put(PREF_KEY, persistable);
 				} else if (subCommand.equals(LIST_ARGS[0])) {
 					jsonObject.forEach((alias, desintation) -> {
 						LOGGER.info(alias + " -> " + desintation);
@@ -103,7 +105,7 @@ public class AliasProcessor {
 	}
 
 	public Map<String, Path> provideAliasToPaths() {
-		final String rawAliases = this.preferences.get("aliases", "{}");
+		final String rawAliases = this.preferences.get(PREF_KEY, PREF_DEFAULT);
 		final JsonReader reader = Json.createReader(new StringReader(rawAliases));
 		final JsonObject jsonObject = reader.readObject();
 		final Map<String, Path> mapping = new HashMap<>();
