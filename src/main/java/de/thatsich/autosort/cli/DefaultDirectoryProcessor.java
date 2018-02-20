@@ -3,6 +3,7 @@ package de.thatsich.autosort.cli;
 import de.thatsich.autosort.PreferenceManager;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-public class DefaultDirectoryProcessor {
+public class DefaultDirectoryProcessor implements Processor<Path> {
 	private static final String SHORT_COMMAND = null;
 	private static final String LONG_COMMAND = "default";
 	private static final String SET_ARGS = "destination";
@@ -29,6 +30,7 @@ public class DefaultDirectoryProcessor {
 		this.preferences = preferences;
 	}
 
+	@Override
 	public Option constructOption() {
 		return Option.builder(SHORT_COMMAND)
 				.longOpt(LONG_COMMAND)
@@ -41,6 +43,7 @@ public class DefaultDirectoryProcessor {
 				.build();
 	}
 
+	@Override
 	public Path processCommandLine(CommandLine cl) {
 		if (cl.hasOption(LONG_COMMAND)) {
 			final String[] filterArgs = cl.getOptionValues(LONG_COMMAND);
@@ -59,7 +62,9 @@ public class DefaultDirectoryProcessor {
 				return defaultDirectoryPath;
 			// guard against invalid inputs
 			} else if (filterArgs.length > MAX_ARGS) {
-				this.helpPrinter.printHelp();
+				final Options options = new Options();
+				options.addOption(this.constructOption());
+				this.helpPrinter.printOptions(options);
 
 				throw new IllegalArgumentException("At least '" + MAX_ARGS + "' arguments required but given '" + filterArgs.length + "' with '" + Arrays.toString(filterArgs) + "'.");
 			}

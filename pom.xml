@@ -64,6 +64,13 @@
             <version>2.15.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- since this is a command line tool we need to text the out stream somehow -->
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.17.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

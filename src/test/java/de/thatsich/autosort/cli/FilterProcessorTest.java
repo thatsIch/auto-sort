@@ -2,8 +2,8 @@ package de.thatsich.autosort.cli;
 
 import de.thatsich.autosort.PreferenceManager;
 import org.apache.commons.cli.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.junit.Rule;
+import org.junit.contrib.java.lang.system.SystemOutRule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 
@@ -16,6 +16,9 @@ class FilterProcessorTest {
 	private FilterProcessor filterProcessor;
 	private DefaultParser argsParser;
 	private Options options;
+
+	@Rule
+	public final SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests().enableLog();
 
 	@BeforeEach
 	void setUp() {
@@ -124,28 +127,17 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	// I cant check for logging atm
-	@Disabled
 	void processCommandLine_withList_prints() throws ParseException, BackingStoreException {
 		// given
-//		System.setOut(new PrintStream());
 
 		// when
 		final String[] args = {"--filter", "list"};
 		final CommandLine setCL = argsParser.parse(options, args);
-		final Logger filterProcessorLogger = LogManager.getLogger(FilterProcessor.class);
-//		final org.apache.logging.log4j.core.Logger coreLogger = (org.apache.logging.log4j.core.Logger) filterProcessorLogger;
-//		coreLogger.addAppender();
-//		ConfigurationBuilderFactory.newConfigurationBuilder().add(new AppenderComponentBuilder())
 		filterProcessor.processCommandLine(setCL);
 
 		// then
-//		Assertions.assertThrows(UnsupportedOperationException.class, process);
+		Assertions.assertNotNull(systemOutRule.getLog());
 	}
-
-//	public class TestAppender extends Appender
-
-
 
 	// needs to list all filters
 	// should work with empty list

@@ -13,10 +13,6 @@ public class HelpPrinter {
 		this.options = options;
 	}
 
-	public void printHelp() {
-		this.printOptions(this.options);
-	}
-
 	public void printOptions(Options options) {
 		formatter.setOptionComparator(null);
 		formatter.setWidth(140);

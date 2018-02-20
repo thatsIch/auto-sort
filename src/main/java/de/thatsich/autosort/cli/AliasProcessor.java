@@ -1,7 +1,9 @@
 package de.thatsich.autosort.cli;
 
+import de.thatsich.autosort.PreferenceManager;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,11 +14,13 @@ import javax.json.JsonValue;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
-import java.util.prefs.Preferences;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class AliasProcessor {
+public class AliasProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
 	private static final String LONG_COMMAND = "alias";
 	private static final String[] ADD_ARGS = {
@@ -48,13 +52,14 @@ public class AliasProcessor {
 
 
 	private final HelpPrinter helpPrinter;
-	private final Preferences preferences;
+	private final PreferenceManager preferences;
 
-	public AliasProcessor(final HelpPrinter helpPrinter, Preferences preferences) {
+	public AliasProcessor(final HelpPrinter helpPrinter, PreferenceManager preferences) {
 		this.helpPrinter = helpPrinter;
 		this.preferences = preferences;
 	}
 
+	@Override
 	public Option constructOption() {
 		return Option.builder(SHORT_COMMAND)
 				.longOpt(LONG_COMMAND)
@@ -65,11 +70,14 @@ public class AliasProcessor {
 				.build();
 	}
 
-	public void processCommandLine(CommandLine cl) {
+	@Override
+	public Void processCommandLine(CommandLine cl) {
 		if (cl.hasOption(LONG_COMMAND)) {
 			final String[] aliasArgs = cl.getOptionValues(LONG_COMMAND);
 			if (aliasArgs.length > MAX_ARGS) {
-				this.helpPrinter.printHelp();
+				final Options options = new Options();
+				options.addOption(this.constructOption());
+				this.helpPrinter.printOptions(options);
 			}
 			else {
 				final String subCommand = aliasArgs[0];
@@ -96,12 +104,12 @@ public class AliasProcessor {
 
 					this.preferences.put(PREF_KEY, persistable);
 				} else if (subCommand.equals(LIST_ARGS[0])) {
-					jsonObject.forEach((alias, desintation) -> {
-						LOGGER.info(alias + " -> " + desintation);
-					});
+					jsonObject.forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
 				}
 			}
 		}
+
+		return null;
 	}
 
 	public Map<String, Path> provideAliasToPaths() {

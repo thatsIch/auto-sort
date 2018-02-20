@@ -58,8 +58,6 @@ class DefaultDirectoryProcessorTest {
 		// when
 		final String[] args = {"--default"};
 		final CommandLine cl = argsParser.parse(options, args);
-//		final List<String> argList = cl.getArgList();
-//		System.out.println("argList = " + argList);
 		final Path defaultPath = defaultDirectoryProcessor.processCommandLine(cl);
 
 		// then
@@ -73,8 +71,6 @@ class DefaultDirectoryProcessorTest {
 		// when
 		final String[] args = {"--default", "C:"};
 		final CommandLine cl = argsParser.parse(options, args);
-//		final List<String> argList = cl.getArgList();
-//		System.out.println("argList = " + argList);
 		final Path defaultPath = defaultDirectoryProcessor.processCommandLine(cl);
 
 		// then
@@ -89,8 +85,6 @@ class DefaultDirectoryProcessorTest {
 		// setting
 		final String[] setArgs = {"--default", "C:"};
 		final CommandLine setCL = argsParser.parse(options, setArgs);
-//		final List<String> argList = cl.getArgList();
-//		System.out.println("argList = " + argList);
 		final Path setPath = defaultDirectoryProcessor.processCommandLine(setCL);
 
 
@@ -98,8 +92,6 @@ class DefaultDirectoryProcessorTest {
 		// setting
 		final String[] getArgs = {"--default"};
 		final CommandLine getCL = argsParser.parse(options, getArgs);
-//		final List<String> argList = cl.getArgList();
-//		System.out.println("argList = " + argList);
 		final Path defaultPath = defaultDirectoryProcessor.processCommandLine(getCL);
 
 		// then

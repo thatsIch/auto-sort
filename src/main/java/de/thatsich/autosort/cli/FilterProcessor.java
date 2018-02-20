@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class FilterProcessor {
+public class FilterProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
 	private static final String LONG_COMMAND = "filter";
 	private static final String[] ADD_ARGS = {
@@ -52,6 +52,7 @@ public class FilterProcessor {
 		this.preferences = preferences;
 	}
 
+	@Override
 	public Option constructOption() {
 		return Option.builder(SHORT_COMMAND)
 				.longOpt(LONG_COMMAND)
@@ -62,7 +63,8 @@ public class FilterProcessor {
 				.build();
 	}
 
-	public void processCommandLine(CommandLine cl) {
+	@Override
+	public Void processCommandLine(CommandLine cl) {
 		if (cl.hasOption(LONG_COMMAND)) {
 			// can never be null because the cl filters that case
 			final String[] filterArgs = cl.getOptionValues(LONG_COMMAND);
@@ -114,5 +116,7 @@ public class FilterProcessor {
 				throw new UnsupportedOperationException("unknown sub-command '"+subCommand+"' was given but should be one of the supported ones.");
 			}
 		}
+
+		return null;
 	}
 }

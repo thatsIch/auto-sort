@@ -42,7 +42,7 @@ public class Main {
 		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
 		options.addOption(defaultDirectoryProcessor.constructOption());
 
-		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, preferences);
+		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, preferenceManager);
 		options.addOption(aliasProcessor.constructOption());
 
 		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, preferenceManager);
@@ -54,7 +54,7 @@ public class Main {
 
 
 		if (cl.hasOption("h")) {
-			helpPrinter.printHelp();
+			helpPrinter.printOptions(options);
 
 			return;
 		}
