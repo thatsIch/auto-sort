@@ -37,7 +37,7 @@ jobs:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test
+      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report coveralls:report
 
       # run tests!
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
