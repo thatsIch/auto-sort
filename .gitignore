@@ -17,3 +17,4 @@
 # include build related files
 !.circleci
 !.scrutinizer.yml
+!.coveralls.yml
