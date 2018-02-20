@@ -14,11 +14,11 @@ import java.nio.file.Paths;
 import java.util.prefs.Preferences;
 
 /**
- * TODO add description
- * <p>
- * TODO add meaning
- * <p>
- * TODO add usage
+ * Single entry point for the application providing the main args
+ *
+ * Handles all the dependency management and constructs the basic application and processing
+ *
+ * call "autosort --help" for usage
  *
  * @author thatsIch (thatsich@mail.de)
  * @version 1.0-SNAPSHOT 15.11.2017
