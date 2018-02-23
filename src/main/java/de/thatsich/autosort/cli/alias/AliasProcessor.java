@@ -1,22 +1,16 @@
-package de.thatsich.autosort.cli;
+package de.thatsich.autosort.cli.alias;
 
-import de.thatsich.autosort.PreferenceManager;
+import de.thatsich.autosort.cli.HelpPrinter;
+import de.thatsich.autosort.cli.Processor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-import java.io.StringReader;
-import java.nio.file.Path;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -45,18 +39,16 @@ public class AliasProcessor implements Processor<Void> {
 			.add(Arrays.stream(LIST_ARGS)
 					.collect(Collectors.joining(" ")))
 			.toString();
-	private static final String PREF_KEY = "aliases";
-	private static final String PREF_DEFAULT = "{}";
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 
 	private final HelpPrinter helpPrinter;
-	private final PreferenceManager preferences;
+	private final AliasRepository repository;
 
-	public AliasProcessor(final HelpPrinter helpPrinter, PreferenceManager preferences) {
+	public AliasProcessor(final HelpPrinter helpPrinter, AliasRepository repository) {
 		this.helpPrinter = helpPrinter;
-		this.preferences = preferences;
+		this.repository = repository;
 	}
 
 	@Override
@@ -71,7 +63,7 @@ public class AliasProcessor implements Processor<Void> {
 	}
 
 	@Override
-	public Void processCommandLine(CommandLine cl) {
+	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
 		if (cl.hasOption(LONG_COMMAND)) {
 			final String[] aliasArgs = cl.getOptionValues(LONG_COMMAND);
 			if (aliasArgs.length > MAX_ARGS) {
@@ -81,50 +73,21 @@ public class AliasProcessor implements Processor<Void> {
 			}
 			else {
 				final String subCommand = aliasArgs[0];
-				final String rawAliases = this.preferences.get(PREF_KEY, PREF_DEFAULT);
-				final JsonReader reader = Json.createReader(new StringReader(rawAliases));
-				final JsonObject jsonObject = reader.readObject();
 				if (subCommand.equals(ADD_ARGS[0])) {
 					final String alias = aliasArgs[1];
 					final String destination = aliasArgs[2];
 
-					final String persistable = Json.createObjectBuilder(jsonObject)
-							.add(alias, destination)
-							.build()
-							.toString();
-
-					this.preferences.put(PREF_KEY, persistable);
+					this.repository.persist(alias, Paths.get(destination));
 				} else if (subCommand.equals(DEL_ARGS[0])) {
 					final String alias = aliasArgs[1];
 
-					final String persistable = Json.createObjectBuilder(jsonObject)
-							.remove(alias)
-							.build()
-							.toString();
-
-					this.preferences.put(PREF_KEY, persistable);
+					this.repository.remove(alias);
 				} else if (subCommand.equals(LIST_ARGS[0])) {
-					jsonObject.forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
+					this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
 				}
 			}
 		}
 
 		return null;
-	}
-
-	public Map<String, Path> provideAliasToPaths() {
-		final String rawAliases = this.preferences.get(PREF_KEY, PREF_DEFAULT);
-		final JsonReader reader = Json.createReader(new StringReader(rawAliases));
-		final JsonObject jsonObject = reader.readObject();
-		final Map<String, Path> mapping = new HashMap<>();
-		for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
-			final JsonValue value = entry.getValue();
-			final String raw = value.toString();
-			final Path path = Paths.get(raw);
-
-			mapping.put(entry.getKey(), path);
-		}
-
-		return mapping;
 	}
 }

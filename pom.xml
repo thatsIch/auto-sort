@@ -71,6 +71,19 @@
             <version>1.17.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Benchmarking -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.20</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>1.20</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -133,7 +146,8 @@
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
                 <configuration>
-                    <repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+                    <repoToken>COVERALLS_REPO_TOKEN</repoToken>
+                    <!--<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>-->
                 </configuration>
                 <dependencies>
                     <!-- temp fix for java 9 -->

@@ -1,6 +1,6 @@
 package de.thatsich.autosort;
 
-import de.thatsich.autosort.cli.AliasProcessor;
+import de.thatsich.autosort.cli.alias.*;
 import de.thatsich.autosort.cli.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.FilterProcessor;
 import de.thatsich.autosort.cli.HelpPrinter;
@@ -36,13 +36,17 @@ public class Main {
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
 		final Preferences preferences = Preferences.userNodeForPackage(Main.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
+		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(preferences);
+		final PathConverterService pathConverterService = new PathConverterService();
+		final URLEncoderAliasConverterService aliasConverterService = new URLEncoderAliasConverterService();
+		final AliasRepository aliasRepository = new AliasRepository(persistence, pathConverterService, aliasConverterService);
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
 
 		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
 		options.addOption(defaultDirectoryProcessor.constructOption());
 
-		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, preferenceManager);
+		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, aliasRepository);
 		options.addOption(aliasProcessor.constructOption());
 
 		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, preferenceManager);
