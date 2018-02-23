@@ -40,22 +40,12 @@ jobs:
       # run tests!
       # coveralls currently buggy
       # run xxx coveralls:report
-      - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-      - run: chmod +x ./cc-test-reporter
-      - run: ./cc-test-reporter
-      - run: ./cc-test-reporter before-build
 
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
       - run: bash <(curl -s https://codecov.io/bash)
 
       - run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar -Dsonar.organization=thatsich-github -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${SONARQUBE_TOKEN}
-
-      # workaround so it can find the source files
-      - run: cd src/main/java
-      - run: ../../../cc-test-reporter format-coverage -d -t jacoco ../../../repo/target/site/jacoco/jacoco.xml
-      - run: ../../../cc-test-reporter upload-coverage -d
-      # - run: ./cc-test-reporter after-build --coverage-input-type jacoco --prefix /home/circleci/repo/target/site/jacoco --exit-code 0
 
       - run:
           name: Save test results
