@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class AliasProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
-	private static final String LONG_COMMAND = "alias";
+	private static final String LONG_COMMAND = "aliases";
 	private static final String[] ADD_ARGS = {
 			"add",
 			"alias",
