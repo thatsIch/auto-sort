@@ -46,7 +46,7 @@ class JUPreferencesPersistenceIT {
 	void testRetrieveWithoutPersistFromPreferences() {
 		// given
 		final String expected = "Test";
-		this.preferences.put("alias", expected);
+		this.preferences.put("demo", expected);
 		final JUPreferencesPersistence persistence = new JUPreferencesPersistence("demo", this.preferences);
 
 		// when

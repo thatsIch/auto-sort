@@ -1,7 +1,7 @@
 package de.thatsich.autosort.cli.alias;
 
+import de.thatsich.autosort.cli.BaseProcessor;
 import de.thatsich.autosort.cli.HelpPrinter;
-import de.thatsich.autosort.cli.Processor;
 import de.thatsich.autosort.cli.Repository;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
@@ -13,29 +13,14 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-public class AliasProcessor implements Processor<Void> {
-	private static final String SHORT_COMMAND = null;
-	private static final String LONG_COMMAND = "aliases";
-	private static final String[] ADD_ARGS = {
-			"add",
-			"alias",
-			"destination"
-	};
-	private static final String[] DEL_ARGS = {
-			"delete",
-			"alias"
-	};
-	private static final String[] LIST_ARGS = {
-			"list"
-	};
-	private static final int MAX_ARGS = Math.max(ADD_ARGS.length, Math.max(DEL_ARGS.length, LIST_ARGS.length));
+public class AliasProcessor extends BaseProcessor<Void> {
+
 	private static final String DESCRIPTION = "manages aliases defined in the alias mapping.";
-	private static final String ARG_NAME = Processor.constructArgNames(ADD_ARGS, DEL_ARGS, LIST_ARGS);
 
 	private static final Logger LOGGER = LogManager.getLogger();
-
 
 	private final HelpPrinter helpPrinter;
 	private final Repository<String, Path> repository;
@@ -47,25 +32,25 @@ public class AliasProcessor implements Processor<Void> {
 
 	@Override
 	public Option constructOption() {
-		return Option.builder(SHORT_COMMAND)
-				.longOpt(LONG_COMMAND)
+		return Option.builder(getShortCommand())
+				.longOpt(getLongCommand())
 				.desc(DESCRIPTION)
 				.hasArgs()
 				.valueSeparator(' ')
-				.argName(ARG_NAME)
+				.argName(getArgNames())
 				.build();
 	}
 
 	@Override
 	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
-		if (cl.hasOption(LONG_COMMAND)) {
-			final String[] aliasArgs = cl.getOptionValues(LONG_COMMAND);
-			if (aliasArgs.length > MAX_ARGS) {
+		if (cl.hasOption(getLongCommand())) {
+			final String[] aliasArgs = cl.getOptionValues(getLongCommand());
+			if (aliasArgs.length > getMaxArgs()) {
 				final Options options = new Options();
 				options.addOption(this.constructOption());
 				this.helpPrinter.printOptions(options);
 
-				throw new IllegalStateException("Too many arguments. Alias requires at most '" + MAX_ARGS + "' arguments.");
+				throw new IllegalStateException("Too many arguments. Alias requires at most '" + getMaxArgs() + "' arguments.");
 			}
 
 			final String subCommand = aliasArgs[0];
@@ -85,7 +70,7 @@ public class AliasProcessor implements Processor<Void> {
 	}
 
 	private boolean tryAdding(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
-		if (subCommand.equals(ADD_ARGS[0])) {
+		if (subCommand.equals(getAddArgs().get(0))) {
 			final String alias = aliasArgs[1];
 			final Optional<Path> binding = this.repository.find(alias);
 			if (binding.isPresent()) {
@@ -103,7 +88,7 @@ public class AliasProcessor implements Processor<Void> {
 	}
 
 	private boolean tryDeleting(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
-		if (subCommand.equals(DEL_ARGS[0])) {
+		if (subCommand.equals(getDelArgs().get(0))) {
 			final String alias = aliasArgs[1];
 
 			final Optional<Path> binding = this.repository.remove(alias);
@@ -118,7 +103,7 @@ public class AliasProcessor implements Processor<Void> {
 	}
 
 	private boolean tryListing(String subCommand) {
-		if (subCommand.equals(LIST_ARGS[0])) {
+		if (subCommand.equals(getListArgs().get(0))) {
 			this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
 
 			return true;
@@ -126,4 +111,35 @@ public class AliasProcessor implements Processor<Void> {
 
 		return false;
 	}
+
+	@Override
+	public String getShortCommand() {
+		return null;
+	}
+
+	@Override
+	public String getLongCommand() {
+		return "alias";
+	}
+
+	@Override
+	public List<String> getAddArgs() {
+		return List.of("add", "alias", "destination");
+	}
+
+	@Override
+	public List<String> getDelArgs() {
+		return List.of("delete", "alias");
+	}
+
+	@Override
+	public List<String> getListArgs() {
+		return List.of("list");
+	}
+
+	@Override
+	protected String getArgNames() {
+		return null;
+	}
+
 }

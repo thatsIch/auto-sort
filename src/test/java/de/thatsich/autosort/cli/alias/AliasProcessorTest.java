@@ -62,7 +62,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] args = {"--aliases"};
+		final String[] args = {"--alias"};
 		final Executable process = () -> argsParser.parse(options, args);
 
 		// then
@@ -74,7 +74,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] args = {"--aliases", "just", "too", "many", "args", "more", "than", "expected"};
+		final String[] args = {"--alias", "just", "too", "many", "args", "more", "than", "expected"};
 		final CommandLine cl = argsParser.parse(options, args);
 		final Executable process = () ->  this.aliasProcessor.processCommandLine(cl);
 
@@ -88,7 +88,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] args = {"--aliases", "unknown", "sub", "command"};
+		final String[] args = {"--alias", "unknown", "sub", "command"};
 		final CommandLine cl = argsParser.parse(options, args);
 		final Executable process = () ->  this.aliasProcessor.processCommandLine(cl);
 
@@ -99,12 +99,12 @@ class AliasProcessorTest {
 	@Test
 	void processCommandLine_list_shouldPrint() throws ParseException, UnsupportedEncodingException {
 		// given
-		final String[] addArgs = {"--aliases", "add", "test", "D:\\Download"};
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
 		this.aliasProcessor.processCommandLine(addCL);
 
 		// when
-		final String[] listArgs = {"--aliases", "list"};
+		final String[] listArgs = {"--alias", "list"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
@@ -117,12 +117,12 @@ class AliasProcessorTest {
 	@Test
 	void processCommandLine_deletingWithPresent_shouldDelete() throws ParseException, UnsupportedEncodingException {
 		// given
-		final String[] addArgs = {"--aliases", "add", "test", "D:\\Download"};
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
 		this.aliasProcessor.processCommandLine(addCL);
 
 		// when
-		final String[] listArgs = {"--aliases", "delete", "test"};
+		final String[] listArgs = {"--alias", "delete", "test"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
@@ -135,7 +135,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] listArgs = {"--aliases", "delete", "test"};
+		final String[] listArgs = {"--alias", "delete", "test"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
@@ -149,7 +149,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] listArgs = {"--aliases", "add", "test", "D:\\Download"};
+		final String[] listArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
@@ -161,12 +161,12 @@ class AliasProcessorTest {
 	@Test
 	void processCommandLine_addingDuplicate_shouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
-		final String[] addArgs = {"--aliases", "add", "test", "D:\\Download"};
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
 		this.aliasProcessor.processCommandLine(addCL);
 
 		// when
-		final String[] listArgs = {"--aliases", "add", "test", "D:\\New"};
+		final String[] listArgs = {"--alias", "add", "test", "D:\\New"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
