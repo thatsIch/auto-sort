@@ -14,7 +14,7 @@ class AliasProcessorTest {
 	private AliasProcessor aliasProcessor;
 	private DefaultParser argsParser;
 	private Options options;
-	private NonPersistentRepository repository;
+	private NonPersistentPathRepository repository;
 
 //	@Rule
 //	public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
@@ -25,7 +25,7 @@ class AliasProcessorTest {
 		this.options = new Options();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
-		this.repository = new NonPersistentRepository();
+		this.repository = new NonPersistentPathRepository();
 		this.aliasProcessor = new AliasProcessor(helpPrinter, repository);
 		final Option option = aliasProcessor.constructOption();
 		options.addOption(option);

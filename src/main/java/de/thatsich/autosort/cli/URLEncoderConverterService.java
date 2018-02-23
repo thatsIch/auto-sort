@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class URLEncoderAliasConverterService {
+public class URLEncoderConverterService {
 
 	private static final String ENCODING = "UTF-8";
 

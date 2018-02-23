@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;

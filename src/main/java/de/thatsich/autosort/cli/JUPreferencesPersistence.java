@@ -1,14 +1,14 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
 import java.util.prefs.Preferences;
 
-public class AliasJUPreferencesPersistence implements Persistence {
+public class JUPreferencesPersistence implements Persistence {
 	private static final String KEY = "alias";
 
 	private final Preferences preferences;
 	private String cache;
 
-	public AliasJUPreferencesPersistence(Preferences preferences) {
+	public JUPreferencesPersistence(Preferences preferences) {
 		this.preferences = preferences;
 	}
 

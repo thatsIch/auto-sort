@@ -1,9 +1,12 @@
 package de.thatsich.autosort;
 
+import de.thatsich.autosort.cli.JUPreferencesPersistence;
+import de.thatsich.autosort.cli.URLEncoderConverterService;
 import de.thatsich.autosort.cli.alias.*;
 import de.thatsich.autosort.cli.DefaultDirectoryProcessor;
-import de.thatsich.autosort.cli.FilterProcessor;
+import de.thatsich.autosort.cli.filter.FilterProcessor;
 import de.thatsich.autosort.cli.HelpPrinter;
+import de.thatsich.autosort.cli.filter.FilterRepository;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,10 +39,11 @@ public class Main {
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		final Preferences preferences = Preferences.userNodeForPackage(Main.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
-		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(preferences);
+		final JUPreferencesPersistence persistence = new JUPreferencesPersistence(preferences);
 		final PathConverterService pathConverterService = new PathConverterService();
-		final URLEncoderAliasConverterService aliasConverterService = new URLEncoderAliasConverterService();
-		final AliasRepository aliasRepository = new AliasRepository(persistence, pathConverterService, aliasConverterService);
+		final URLEncoderConverterService converterService = new URLEncoderConverterService();
+		final AliasRepository aliasRepository = new AliasRepository(persistence, pathConverterService, converterService);
+		final FilterRepository filterRepository = new FilterRepository(persistence, converterService);
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
 
@@ -49,7 +53,7 @@ public class Main {
 		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, aliasRepository);
 		options.addOption(aliasProcessor.constructOption());
 
-		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, preferenceManager);
+		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, filterRepository);
 		options.addOption(filterProcessor.constructOption());
 
 		options.addOption("h", "help", false, "displays help. overrides any other command.");

@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-class AliasJUPreferencesPersistenceIT {
+class JUPreferencesPersistenceIT {
 
 
 	private Preferences preferences;
 
 	@BeforeEach
 	void setUp() {
-		this.preferences = Preferences.userNodeForPackage(AliasJUPreferencesPersistenceIT.class);
+		this.preferences = Preferences.userNodeForPackage(JUPreferencesPersistenceIT.class);
 	}
 
 	@AfterEach
@@ -25,7 +25,7 @@ class AliasJUPreferencesPersistenceIT {
 
 	@Test
 	void testPersistRetrieve() {
-		final Persistence persistence = new AliasJUPreferencesPersistence(this.preferences);
+		final Persistence persistence = new JUPreferencesPersistence(this.preferences);
 		final String expected = "Test";
 		persistence.persist(expected);
 		final String actual = persistence.retrieve();
@@ -35,7 +35,7 @@ class AliasJUPreferencesPersistenceIT {
 
 	@Test
 	void testRetrieveWithoutPersist() {
-		final Persistence  persistence = new AliasJUPreferencesPersistence(this.preferences);
+		final Persistence  persistence = new JUPreferencesPersistence(this.preferences);
 		final String expected = "";
 		final String actual = persistence.retrieve();
 
@@ -47,7 +47,7 @@ class AliasJUPreferencesPersistenceIT {
 		// given
 		final String expected = "Test";
 		this.preferences.put("alias", expected);
-		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(this.preferences);
+		final JUPreferencesPersistence persistence = new JUPreferencesPersistence(this.preferences);
 
 		// when
 		final String actual = persistence.retrieve();

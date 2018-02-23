@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli.filter;
 
 import de.thatsich.autosort.cli.HelpPrinter;
 import de.thatsich.autosort.cli.Processor;
@@ -10,37 +10,34 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
-public class AliasProcessor implements Processor<Void> {
+public class FilterProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
-	private static final String LONG_COMMAND = "alias";
+	private static final String LONG_COMMAND = "filter";
 	private static final String[] ADD_ARGS = {
 			"add",
-			"alias",
+			"regex",
 			"destination"
 	};
 	private static final String[] DEL_ARGS = {
 			"delete",
-			"alias"
+			"regex"
 	};
 	private static final String[] LIST_ARGS = {
 			"list"
 	};
 	private static final int MAX_ARGS = Math.max(ADD_ARGS.length, Math.max(DEL_ARGS.length, LIST_ARGS.length));
-	private static final String DESCRIPTION = "manages aliases defined in the alias mapping.";
+	private static final String DESCRIPTION = "manages filters defined in the filter mapping.";
 	private static final String ARG_NAME = Processor.constructArgNames(ADD_ARGS, DEL_ARGS, LIST_ARGS);
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-
 	private final HelpPrinter helpPrinter;
-	private final Repository<String, Path> repository;
+	private final Repository<String, String> repository;
 
-	public AliasProcessor(final HelpPrinter helpPrinter, Repository<String, Path> repository) {
+	public FilterProcessor(final HelpPrinter helpPrinter, Repository<String, String> repository) {
 		this.helpPrinter = helpPrinter;
 		this.repository = repository;
 	}
@@ -59,41 +56,47 @@ public class AliasProcessor implements Processor<Void> {
 	@Override
 	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
 		if (cl.hasOption(LONG_COMMAND)) {
-			final String[] aliasArgs = cl.getOptionValues(LONG_COMMAND);
-			if (aliasArgs.length > MAX_ARGS) {
-				final Options options = new Options();
-				options.addOption(this.constructOption());
-				this.helpPrinter.printOptions(options);
+			// can never be null because the cl filters that case
+			final String[] filterArgs = cl.getOptionValues(LONG_COMMAND);
 
-				throw new IllegalStateException("Too many arguments. Alias requires at most '" + MAX_ARGS + "' arguments.");
+			final Option option = this.constructOption();
+			final Options options = new Options();
+			options.addOption(option);
+
+			if (filterArgs.length > MAX_ARGS) {
+				helpPrinter.printOptions(options);
+
+				throw new IllegalArgumentException("filter commands requires specific arguments with max '"+MAX_ARGS+"' arguments.");
 			}
 
-			final String subCommand = aliasArgs[0];
-			final boolean processed = this.tryAdding(subCommand, aliasArgs) ||
-					this.tryDeleting(subCommand, aliasArgs) ||
+			final String subCommand = filterArgs[0];
+			final boolean processed = this.tryAdding(subCommand, filterArgs) ||
+					this.tryDeleting(subCommand, filterArgs) ||
 					this.tryListing(subCommand);
 
 			if (!processed) {
-				final String message = "processing command 'alias' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(aliasArgs)+"'.";
+				final String message = "processing command 'filter' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(filterArgs)+"'.";
 				LOGGER.error(message);
-				throw new IllegalStateException(message);
+
+				helpPrinter.printOptions(options);
+
+				throw new UnsupportedOperationException(message);
 			}
 		}
 
-		// passing through
 		return null;
 	}
 
 	private boolean tryAdding(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
 		if (subCommand.equals(ADD_ARGS[0])) {
-			final String alias = aliasArgs[1];
-			final Optional<Path> binding = this.repository.find(alias);
+			final String regex = aliasArgs[1];
+			final Optional<String> binding = this.repository.find(regex);
 			if (binding.isPresent()) {
-				LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
+				LOGGER.warn("Filter '"+regex+"' is already present with the binding '" + binding.get() + "'.");
 			} else {
 				final String destination = aliasArgs[2];
 
-				this.repository.persist(alias, Paths.get(destination));
+				this.repository.persist(regex, destination);
 			}
 
 			return true;
@@ -104,11 +107,11 @@ public class AliasProcessor implements Processor<Void> {
 
 	private boolean tryDeleting(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
 		if (subCommand.equals(DEL_ARGS[0])) {
-			final String alias = aliasArgs[1];
+			final String regex = aliasArgs[1];
 
-			final Optional<Path> binding = this.repository.remove(alias);
+			final Optional<String> binding = this.repository.remove(regex);
 			if (!binding.isPresent()) {
-				LOGGER.warn("No binding found for alias '" + alias + "'.");
+				LOGGER.warn("No binding found for regex '" + regex + "'.");
 			}
 
 			return true;
@@ -119,7 +122,7 @@ public class AliasProcessor implements Processor<Void> {
 
 	private boolean tryListing(String subCommand) {
 		if (subCommand.equals(LIST_ARGS[0])) {
-			this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
+			this.repository.unmodifiable().forEach((regex, binding) -> LOGGER.info(regex + " -> " + binding));
 
 			return true;
 		}

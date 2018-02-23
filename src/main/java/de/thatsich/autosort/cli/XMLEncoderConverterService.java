@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
@@ -8,7 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-public class XMLEncoderAliasConverterService {
+public class XMLEncoderConverterService {
 	public String encode(Map<String, String> mapping) throws UnsupportedEncodingException {
 		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		final XMLEncoder xmlEncoder = new XMLEncoder(bos);

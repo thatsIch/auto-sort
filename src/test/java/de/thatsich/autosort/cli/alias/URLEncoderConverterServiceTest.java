@@ -1,5 +1,6 @@
 package de.thatsich.autosort.cli.alias;
 
+import de.thatsich.autosort.cli.URLEncoderConverterService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,11 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-class URLEncoderAliasConverterServiceTest {
+class URLEncoderConverterServiceTest {
 
 	@Test
 	void reverse() throws UnsupportedEncodingException {
-		final URLEncoderAliasConverterService converterService = new URLEncoderAliasConverterService();
+		final URLEncoderConverterService converterService = new URLEncoderConverterService();
 		final Map<String, String> decoded = new HashMap<>();
 		decoded.put("anime", "D:\\Download\\Anime");
 		decoded.put("love", "D:\\Love Love");
@@ -21,7 +22,7 @@ class URLEncoderAliasConverterServiceTest {
 
 	@Test
 	void convertEmptyMap() throws UnsupportedEncodingException {
-		final URLEncoderAliasConverterService converterService = new URLEncoderAliasConverterService();
+		final URLEncoderConverterService converterService = new URLEncoderConverterService();
 		final Map<String, String> empty = new HashMap<>();
 
 		Assertions.assertEquals(converterService.encode(empty), "");

@@ -1,21 +1,22 @@
-package de.thatsich.autosort.cli;
+package de.thatsich.autosort.cli.filter;
 
-import de.thatsich.autosort.PreferenceManager;
+import de.thatsich.autosort.cli.HelpPrinter;
 import org.apache.commons.cli.*;
 import org.junit.Rule;
 import org.junit.contrib.java.lang.system.SystemOutRule;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import java.io.UnsupportedEncodingException;
 
 class FilterProcessorTest {
 
-	private Preferences preferences;
 	private FilterProcessor filterProcessor;
 	private DefaultParser argsParser;
 	private Options options;
+	private NonPersistentStringRepository repository;
 
 	@Rule
 	public final SystemOutRule systemOutRule = new SystemOutRule().muteForSuccessfulTests().enableLog();
@@ -26,16 +27,10 @@ class FilterProcessorTest {
 		this.options = new Options();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
-		this.preferences = Preferences.userNodeForPackage(FilterProcessorTest.class);
-		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
-		this.filterProcessor = new FilterProcessor(helpPrinter, preferenceManager);
+		this.repository = new NonPersistentStringRepository();
+		this.filterProcessor = new FilterProcessor(helpPrinter, repository);
 		final Option option = filterProcessor.constructOption();
 		options.addOption(option);
-	}
-
-	@AfterEach
-	void tearDown() throws BackingStoreException {
-		preferences.clear();
 	}
 
 	@Test
@@ -44,23 +39,21 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_noInput_shouldDoNothing() throws ParseException, BackingStoreException {
+	void processCommandLine_noInput_shouldDoNothing() throws ParseException, UnsupportedEncodingException {
 		// given
-//		System.setOut(new PrintStream());
 
 		// when
 		final String[] args = {};
 		final CommandLine setCL = argsParser.parse(options, args);
-		filterProcessor.processCommandLine(setCL);
+		final Void processed = filterProcessor.processCommandLine(setCL);
 
 		// then
-		Assertions.assertTrue(this.preferences.keys().length == 0);
+		Assertions.assertNull(processed);
 	}
 
 	@Test
-	void processCommandLine_withFlag_throwsExceptionByFramework() throws ParseException, BackingStoreException {
+	void processCommandLine_withFlag_throwsExceptionByFramework() {
 		// given
-//		System.setOut(new PrintStream());
 
 		// when
 		final String[] args = {"--filter"};
@@ -71,7 +64,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withTooManyFlags_throwsException() throws ParseException, BackingStoreException {
+	void processCommandLine_withTooManyFlags_throwsException() throws ParseException {
 		// given
 //		System.setOut(new PrintStream());
 
@@ -85,7 +78,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withUnknownArg_throwsException() throws ParseException, BackingStoreException {
+	void processCommandLine_withUnknownArg_throwsException() throws ParseException {
 		// given
 //		System.setOut(new PrintStream());
 
@@ -99,7 +92,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withCorrectAdd_shouldWork() throws ParseException, BackingStoreException {
+	void processCommandLine_withCorrectAdd_shouldAdd() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -108,26 +101,59 @@ class FilterProcessorTest {
 		filterProcessor.processCommandLine(setCL);
 
 		// then
-		Assertions.assertTrue(this.preferences.keys().length == 1);
-		Assertions.assertNotEquals("{}", this.preferences.get("filters", "{}"));
+		Assertions.assertTrue(this.repository.find("*.mp4").isPresent());
+		// also test logging
 	}
 
 	@Test
-	void processCommandLine_withCorrectRemove_shouldWork() throws ParseException, BackingStoreException {
+	void processCommandLine_addingDuplicate_shouldWarn() throws ParseException, UnsupportedEncodingException {
+		// given
+		final String[] firstArgs = {"--filter", "add", "*.mp4", "D:\\Download\\Anime"};
+		final CommandLine firstCL = argsParser.parse(options, firstArgs);
+		this.filterProcessor.processCommandLine(firstCL);
+
+		// when
+		final String[] secArgs = {"--filter", "add", "*.mp4", "D:\\Download\\Anime"};
+		final CommandLine secCL = argsParser.parse(options, secArgs);
+		this.filterProcessor.processCommandLine(secCL);
+
+		// then
+		Assertions.assertTrue(this.repository.find("*.mp4").isPresent());
+		// also test logging
+	}
+
+	@Test
+	void processCommandLine_withCorrectRemove_shouldWork() throws ParseException, UnsupportedEncodingException {
+		// given
+		final String[] addArgs = {"--filter", "add", "*.mp4", "D:\\Download\\Anime"};
+		final CommandLine addCL = argsParser.parse(options, addArgs);
+		filterProcessor.processCommandLine(addCL);
+
+		// when
+		final String[] delArgs = {"--filter", "delete", "*.mp4"};
+		final CommandLine delCL = argsParser.parse(options, delArgs);
+		filterProcessor.processCommandLine(delCL);
+
+		// then
+		Assertions.assertFalse(this.repository.find("*.mp4").isPresent());
+	}
+
+	@Test
+	void processCommandLine_deletingNotPresent_shouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
-		final String[] args = {"--filter", "delete", "*.mp4"};
-		final CommandLine setCL = argsParser.parse(options, args);
-		filterProcessor.processCommandLine(setCL);
+		final String[] listArgs = {"--filter", "delete", "*.mp4"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.filterProcessor.processCommandLine(listCL);
 
 		// then
-		Assertions.assertTrue(this.preferences.keys().length == 1);
-		Assertions.assertEquals("{}", this.preferences.get("filters", "{}"));
+		Assertions.assertFalse(this.repository.find("*.mp4").isPresent());
+		// also test logging
 	}
 
 	@Test
-	void processCommandLine_withList_prints() throws ParseException, BackingStoreException {
+	void processCommandLine_withList_prints() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when

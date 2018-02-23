@@ -1,5 +1,9 @@
 package de.thatsich.autosort.cli.alias;
 
+import de.thatsich.autosort.cli.Persistence;
+import de.thatsich.autosort.cli.Repository;
+import de.thatsich.autosort.cli.URLEncoderConverterService;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.*;
@@ -8,11 +12,11 @@ public class AliasRepository implements Repository<String, Path> {
 
 	private final Persistence persistence;
 	private final PathConverterService pathConverter;
-	private final URLEncoderAliasConverterService aliasConverter;
+	private final URLEncoderConverterService aliasConverter;
 
 	private final Map<String, Path> cache;
 
-	public AliasRepository(Persistence persistence, PathConverterService converter, URLEncoderAliasConverterService aliasConverter) {
+	public AliasRepository(Persistence persistence, PathConverterService converter, URLEncoderConverterService aliasConverter) {
 		this.persistence = persistence;
 		this.pathConverter = converter;
 		this.aliasConverter = aliasConverter;

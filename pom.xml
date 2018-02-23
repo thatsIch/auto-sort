@@ -72,6 +72,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- provides detailed information upon test failure -->
+        <dependency>
+            <groupId>hu.advancedweb</groupId>
+            <artifactId>scott</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Benchmarking -->
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
@@ -159,6 +167,18 @@
                     <!--</dependency>-->
                 <!--</dependencies>-->
             <!--</plugin>-->
+            <plugin>
+                <groupId>hu.advancedweb</groupId>
+                <artifactId>scott-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>

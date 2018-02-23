@@ -1,5 +1,6 @@
 package de.thatsich.autosort.cli.alias;
 
+import de.thatsich.autosort.cli.XMLEncoderConverterService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -7,11 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-class XMLEncoderAliasConverterServiceTest {
+class XMLEncoderConverterServiceTest {
 
 	@Test
 	void reverse() throws UnsupportedEncodingException {
-		final XMLEncoderAliasConverterService converterService = new XMLEncoderAliasConverterService();
+		final XMLEncoderConverterService converterService = new XMLEncoderConverterService();
 		final Map<String, String> decoded = new HashMap<>();
 		decoded.put("anime", "D:\\Download\\Anime");
 		decoded.put("love", "D:\\Love Love");

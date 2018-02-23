@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli.filter;
 
 import de.thatsich.autosort.cli.JUPreferencesPersistence;
 import de.thatsich.autosort.cli.Persistence;
@@ -10,25 +10,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Optional;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
-class AliasRepositoryTest {
-
+class FilterRepositoryTest {
 	private Preferences preferences;
-	private AliasRepository aliasRepository;
+	private FilterRepository filterRepository;
 
 	@BeforeEach
 	void setUp() {
-		this.preferences = Preferences.userNodeForPackage(AliasRepositoryTest.class);
+		this.preferences = Preferences.userNodeForPackage(FilterRepositoryTest.class);
 		final Persistence persistence = new JUPreferencesPersistence(preferences);
-		final PathConverterService pathConverterService = new PathConverterService();
 		final URLEncoderConverterService aliasConverterService = new URLEncoderConverterService();
-		this.aliasRepository = new AliasRepository(persistence, pathConverterService, aliasConverterService);
+		this.filterRepository = new FilterRepository(persistence, aliasConverterService);
 	}
 
 	@AfterEach
@@ -39,40 +35,50 @@ class AliasRepositoryTest {
 	@Test
 	void persist() throws UnsupportedEncodingException {
 		// given
-		final Path expected = Paths.get("D:\\Download");
+		final String expected = "D:\\Download";
 
 		// when
-		aliasRepository.persist("Test", expected);
+		filterRepository.persist("Test", expected);
 
 		// then
-		Assertions.assertTrue(aliasRepository.find("Test").isPresent());
-		Assertions.assertEquals(expected, aliasRepository.find("Test").get());
+		final Optional<String> finding = filterRepository.find("Test");
+		Assertions.assertTrue(finding.isPresent());
+		Assertions.assertEquals(expected, finding.get());
 	}
 
 	@Test
-	void find() {
+	void find() throws UnsupportedEncodingException {
+		// given
+		final String expected = "D:\\Download";
+		filterRepository.persist("Test", expected);
+
+		// when
+		final Optional<String> finding = filterRepository.find("Test");
+
+		// then
+		Assertions.assertEquals(Optional.of(expected), finding);
 	}
 
 	@Test
 	void remove() throws UnsupportedEncodingException {
 		// given
-		final Path expected = Paths.get("D:\\Download");
-		aliasRepository.persist("Test", expected);
+		final String expected = "D:\\Download";
+		filterRepository.persist("Test", expected);
 
 		// when
-		final Optional<Path> maybeRemoved = aliasRepository.remove("Test");
+		final Optional<String> maybeRemoved = filterRepository.remove("Test");
 
 		// then
 		Assertions.assertTrue(maybeRemoved.isPresent());
 	}
 
 	@Test
-	void unmodifiable() throws UnsupportedEncodingException {
+	void unmodifiable() {
 		// given
-		final Map<String, Path> unmodifiable = aliasRepository.unmodifiable();
+		final Map<String, String> unmodifiable = filterRepository.unmodifiable();
 
 		// when
-		final Executable process = () -> unmodifiable.put("Test", Paths.get("D:\\Download"));
+		final Executable process = () -> unmodifiable.put("Test", "D:\\Download");
 
 		// then
 		Assertions.assertThrows(UnsupportedOperationException.class, process);
