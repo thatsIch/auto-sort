@@ -11,9 +11,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import java.io.StringReader;
-import java.util.Arrays;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
 
 public class FilterProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
@@ -32,14 +29,7 @@ public class FilterProcessor implements Processor<Void> {
 	};
 	private static final int MAX_ARGS = Math.max(ADD_ARGS.length, Math.max(DEL_ARGS.length, LIST_ARGS.length));
 	private static final String DESCRIPTION = "manages filters defined in the filter mapping.";
-	private static final String ARG_NAME = new StringJoiner("|")
-			.add(Arrays.stream(ADD_ARGS)
-					.collect(Collectors.joining(" ")))
-			.add(Arrays.stream(DEL_ARGS)
-					.collect(Collectors.joining(" ")))
-			.add(Arrays.stream(LIST_ARGS)
-					.collect(Collectors.joining(" ")))
-			.toString();
+	private static final String ARG_NAME = Processor.constructArgNames(ADD_ARGS, DEL_ARGS, LIST_ARGS);
 	private static final String PREF_KEY = "filters";
 
 	private static final Logger LOGGER = LogManager.getLogger();

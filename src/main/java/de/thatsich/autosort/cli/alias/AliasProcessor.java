@@ -11,9 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class AliasProcessor implements Processor<Void> {
 	private static final String SHORT_COMMAND = null;
@@ -32,14 +30,7 @@ public class AliasProcessor implements Processor<Void> {
 	};
 	private static final int MAX_ARGS = Math.max(ADD_ARGS.length, Math.max(DEL_ARGS.length, LIST_ARGS.length));
 	private static final String DESCRIPTION = "manages aliases defined in the alias mapping.";
-	private static final String ARG_NAME = new StringJoiner("|")
-			.add(Arrays.stream(ADD_ARGS)
-				.collect(Collectors.joining(" ")))
-			.add(Arrays.stream(DEL_ARGS)
-					.collect(Collectors.joining(" ")))
-			.add(Arrays.stream(LIST_ARGS)
-					.collect(Collectors.joining(" ")))
-			.toString();
+	private static final String ARG_NAME = Processor.constructArgNames(ADD_ARGS, DEL_ARGS, LIST_ARGS);
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -74,13 +65,19 @@ public class AliasProcessor implements Processor<Void> {
 
 				throw new IllegalStateException("Too many arguments. Alias requires at most '" + MAX_ARGS + "' arguments.");
 			}
-			
+
 			final String subCommand = aliasArgs[0];
 			if (subCommand.equals(ADD_ARGS[0])) {
+				// guard against uniqueness?
 				final String alias = aliasArgs[1];
-				final String destination = aliasArgs[2];
+				final Optional<Path> binding = this.repository.find(alias);
+				if (binding.isPresent()) {
+					LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
+				} else {
+					final String destination = aliasArgs[2];
 
-				this.repository.persist(alias, Paths.get(destination));
+					this.repository.persist(alias, Paths.get(destination));
+				}
 			} else if (subCommand.equals(DEL_ARGS[0])) {
 				final String alias = aliasArgs[1];
 
