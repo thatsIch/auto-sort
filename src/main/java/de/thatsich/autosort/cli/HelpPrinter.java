@@ -6,11 +6,9 @@ import org.apache.commons.cli.Options;
 public class HelpPrinter {
 
 	private final HelpFormatter formatter;
-	private final Options options;
 
-	public HelpPrinter(HelpFormatter formatter, Options options) {
+	public HelpPrinter(HelpFormatter formatter) {
 		this.formatter = formatter;
-		this.options = options;
 	}
 
 	public void printOptions(Options options) {

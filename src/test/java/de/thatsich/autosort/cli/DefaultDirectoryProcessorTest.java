@@ -23,7 +23,7 @@ class DefaultDirectoryProcessorTest {
 	void setUp() {
 		final HelpFormatter formatter = new HelpFormatter();
 		this.options = new Options();
-		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
+		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
 		this.preferences = Preferences.userNodeForPackage(DefaultDirectoryProcessorTest.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
@@ -41,7 +41,7 @@ class DefaultDirectoryProcessorTest {
 	void constructOption() {
 		final HelpFormatter formatter = new HelpFormatter();
 		final Options options = new Options();
-		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
+		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		final Preferences preferences = Preferences.userNodeForPackage(DefaultDirectoryProcessorTest.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
 		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);

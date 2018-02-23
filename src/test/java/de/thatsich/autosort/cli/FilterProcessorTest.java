@@ -24,7 +24,7 @@ class FilterProcessorTest {
 	void setUp() {
 		final HelpFormatter formatter = new HelpFormatter();
 		this.options = new Options();
-		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
+		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
 		this.preferences = Preferences.userNodeForPackage(FilterProcessorTest.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);

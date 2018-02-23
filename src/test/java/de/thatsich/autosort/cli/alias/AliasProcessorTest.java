@@ -23,7 +23,7 @@ class AliasProcessorTest {
 	void setUp() {
 		final HelpFormatter formatter = new HelpFormatter();
 		this.options = new Options();
-		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
+		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
 		this.preferences = Preferences.userNodeForPackage(AliasProcessorTest.class);
 		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(preferences);

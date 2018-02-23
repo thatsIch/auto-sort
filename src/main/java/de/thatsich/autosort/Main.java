@@ -33,7 +33,7 @@ public class Main {
 		final Options options = new Options();
 
 		final HelpFormatter formatter = new HelpFormatter();
-		final HelpPrinter helpPrinter = new HelpPrinter(formatter, options);
+		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		final Preferences preferences = Preferences.userNodeForPackage(Main.class);
 		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
 		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(preferences);
