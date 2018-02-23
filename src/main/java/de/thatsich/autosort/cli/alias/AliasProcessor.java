@@ -124,12 +124,12 @@ public class AliasProcessor extends BaseProcessor<Void> {
 
 	@Override
 	public List<String> getAddArgs() {
-		return List.of("add", "alias", "destination");
+		return List.of("add", "al", "dest");
 	}
 
 	@Override
 	public List<String> getDelArgs() {
-		return List.of("delete", "alias");
+		return List.of("del", "al");
 	}
 
 	@Override
