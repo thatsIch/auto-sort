@@ -81,7 +81,10 @@ public class AliasProcessor implements Processor<Void> {
 			} else if (subCommand.equals(DEL_ARGS[0])) {
 				final String alias = aliasArgs[1];
 
-				this.repository.remove(alias);
+				final Optional<Path> binding = this.repository.remove(alias);
+				if (!binding.isPresent()) {
+					LOGGER.warn("No binding found for alias '" + alias + "'.");
+				}
 			} else if (subCommand.equals(LIST_ARGS[0])) {
 				this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
 			}

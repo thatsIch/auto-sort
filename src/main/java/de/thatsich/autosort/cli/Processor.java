@@ -20,5 +20,5 @@ public interface Processor<T> {
 		}
 
 		return joiner.toString();
-	};
+	}
 }
