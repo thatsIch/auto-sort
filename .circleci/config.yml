@@ -53,8 +53,8 @@ jobs:
 
       # workaround so it can find the source files
       - run: cd src/main/java
-      - run: ../../.././cc-test-reporter format-coverage -d -t jacoco ../../../repo/target/site/jacoco/jacoco.xml
-      - run: ../../.././cc-test-reporter upload-coverage -d
+      - run: ../../../cc-test-reporter format-coverage -d -t jacoco ../../../repo/target/site/jacoco/jacoco.xml
+      - run: ../../../cc-test-reporter upload-coverage -d
       # - run: ./cc-test-reporter after-build --coverage-input-type jacoco --prefix /home/circleci/repo/target/site/jacoco --exit-code 0
 
       - run:
