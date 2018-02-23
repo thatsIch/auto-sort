@@ -10,11 +10,13 @@ public class URLEncoderAliasConverterService {
 	public String encode(Map<String, String> mapping) throws UnsupportedEncodingException {
 		final StringBuilder stringBuilder = new StringBuilder();
 
-		for (String key : mapping.keySet()) {
+		for (Map.Entry<String, String> entry : mapping.entrySet()) {
+			final String key = entry.getKey();
+			final String value = entry.getValue();
+
 			if (stringBuilder.length() > 0) {
 				stringBuilder.append("&");
 			}
-			final String value = mapping.get(key);
 
 			stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
 			stringBuilder.append("=");
