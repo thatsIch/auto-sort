@@ -122,7 +122,7 @@ class AliasProcessorTest {
 		this.aliasProcessor.processCommandLine(addCL);
 
 		// when
-		final String[] listArgs = {"--alias", "delete", "test"};
+		final String[] listArgs = {"--alias", "del", "test"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
@@ -135,7 +135,7 @@ class AliasProcessorTest {
 		// given
 
 		// when
-		final String[] listArgs = {"--alias", "delete", "test"};
+		final String[] listArgs = {"--alias", "del", "test"};
 		final CommandLine listCL = argsParser.parse(options, listArgs);
 		this.aliasProcessor.processCommandLine(listCL);
 
