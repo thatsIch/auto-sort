@@ -38,7 +38,8 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report coveralls:report
+      # coveralls currently buggy
+      # - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report coveralls:report
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
       - run: bash <(curl -s https://codecov.io/bash)
 
