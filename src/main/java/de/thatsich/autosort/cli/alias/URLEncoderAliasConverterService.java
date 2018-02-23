@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class URLEncoderAliasConverterService {
+
+	private static final String ENCODING = "UTF-8";
+
 	public String encode(Map<String, String> mapping) throws UnsupportedEncodingException {
 		final StringBuilder stringBuilder = new StringBuilder();
 
@@ -18,9 +21,9 @@ public class URLEncoderAliasConverterService {
 				stringBuilder.append("&");
 			}
 
-			stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+			stringBuilder.append((key != null ? URLEncoder.encode(key, ENCODING) : ""));
 			stringBuilder.append("=");
-			stringBuilder.append(value != null ? URLEncoder.encode(value, "UTF-8") : "");
+			stringBuilder.append(value != null ? URLEncoder.encode(value, ENCODING) : "");
 		}
 
 		return stringBuilder.toString();
@@ -32,8 +35,8 @@ public class URLEncoderAliasConverterService {
 
 		for (String nameValuePair : nameValuePairs) {
 			final String[] nameValue = nameValuePair.split("=");
-			final String decodedKey = URLDecoder.decode(nameValue[0], "UTF-8");
-			final String decodedValue = nameValue.length > 1 ? URLDecoder.decode(nameValue[1], "UTF-8") : "";
+			final String decodedKey = URLDecoder.decode(nameValue[0], ENCODING);
+			final String decodedValue = nameValue.length > 1 ? URLDecoder.decode(nameValue[1], ENCODING) : "";
 			map.put(decodedKey, decodedValue);
 		}
 
