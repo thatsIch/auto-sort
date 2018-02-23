@@ -43,14 +43,14 @@ jobs:
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       - run: chmod +x ./cc-test-reporter
       - run: ./cc-test-reporter before-build
-      
+
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
       - run: bash <(curl -s https://codecov.io/bash)
 
       - run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar -Dsonar.organization=thatsich-github -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${SONARQUBE_TOKEN}
 
-      - run: ./cc-test-reporter after-build --coverage-input-type jacoco --exit-code 0
+      - run: ./cc-test-reporter after-build --coverage-input-type jacoco --prefix /home/circleci/repo/target --exit-code 0
 
       - run:
           name: Save test results
