@@ -4,7 +4,6 @@
 
 [![Maintenance](https://img.shields.io/maintenance/yes/2018.svg)](https://github.com/thatsIch/auto-sort)
 [![CircleCI](https://circleci.com/gh/thatsIch/auto-sort.svg?style=shield)](https://circleci.com/gh/thatsIch/auto-sort)
-[![ScrutinizerCI](https://scrutinizer-ci.com/g/thatsIch/auto-sort/badges/build.png?b=master)](https://scrutinizer-ci.com/g/thatsIch/auto-sort/)
 
 [![Coverage Status](https://coveralls.io/repos/github/thatsIch/auto-sort/badge.svg?branch=master)](https://coveralls.io/github/thatsIch/auto-sort?branch=master)
 [![codecov](https://codecov.io/gh/thatsIch/auto-sort/branch/master/graph/badge.svg)](https://codecov.io/gh/thatsIch/auto-sort)
