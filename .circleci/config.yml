@@ -51,9 +51,9 @@ jobs:
 
       - run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar -Dsonar.organization=thatsich-github -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${SONARQUBE_TOKEN}
 
-      - run: ./cc-test-reporter format-coverage -d -t jacoco /home/circleci/repo/target/jacoco.exec
-      - run: ./cc-test-reporter upload-coverage -d
-      # - run: ./cc-test-reporter after-build --coverage-input-type jacoco --prefix /home/circleci/repo/target --exit-code 0
+      #- run: ./cc-test-reporter format-coverage -d -t jacoco /home/circleci/repo/target/jacoco.exec
+      #- run: ./cc-test-reporter upload-coverage -d
+      - run: ./cc-test-reporter after-build --coverage-input-type jacoco --prefix /home/circleci/repo/target/site/jacoco --exit-code 0
 
       - run:
           name: Save test results
