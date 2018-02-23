@@ -3,7 +3,7 @@ package de.thatsich.autosort;
 import de.thatsich.autosort.cli.JUPreferencesPersistence;
 import de.thatsich.autosort.cli.URLEncoderConverterService;
 import de.thatsich.autosort.cli.alias.*;
-import de.thatsich.autosort.cli.DefaultDirectoryProcessor;
+import de.thatsich.autosort.cli.def.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.filter.FilterProcessor;
 import de.thatsich.autosort.cli.HelpPrinter;
 import de.thatsich.autosort.cli.filter.FilterRepository;
@@ -38,16 +38,17 @@ public class Main {
 		final HelpFormatter formatter = new HelpFormatter();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		final Preferences preferences = Preferences.userNodeForPackage(Main.class);
-		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
-		final JUPreferencesPersistence persistence = new JUPreferencesPersistence(preferences);
+		final JUPreferencesPersistence aliasPersistence = new JUPreferencesPersistence("alias", preferences);
+		final JUPreferencesPersistence filterPersistence = new JUPreferencesPersistence("filter", preferences);
+		final JUPreferencesPersistence defaultPersistence = new JUPreferencesPersistence("default", preferences);
 		final PathConverterService pathConverterService = new PathConverterService();
 		final URLEncoderConverterService converterService = new URLEncoderConverterService();
-		final AliasRepository aliasRepository = new AliasRepository(persistence, pathConverterService, converterService);
-		final FilterRepository filterRepository = new FilterRepository(persistence, converterService);
+		final AliasRepository aliasRepository = new AliasRepository(aliasPersistence, pathConverterService, converterService);
+		final FilterRepository filterRepository = new FilterRepository(filterPersistence, converterService);
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
 
-		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
+		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, defaultPersistence);
 		options.addOption(defaultDirectoryProcessor.constructOption());
 
 		final AliasProcessor aliasProcessor = new AliasProcessor(helpPrinter, aliasRepository);

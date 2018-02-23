@@ -1,6 +1,8 @@
-package de.thatsich.autosort.cli;
+package de.thatsich.autosort.cli.def;
 
-import de.thatsich.autosort.PreferenceManager;
+import de.thatsich.autosort.cli.HelpPrinter;
+import de.thatsich.autosort.cli.JUPreferencesPersistence;
+import de.thatsich.autosort.cli.Processor;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
@@ -18,16 +20,15 @@ public class DefaultDirectoryProcessor implements Processor<Path> {
 	private static final int MAX_ARGS = 1;
 	private static final String DESCRIPTION = "manages default-directory.";
 	private static final String ARG_NAME = "?" + SET_ARGS;
-	private static final String PREF_KEY = "default";
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final HelpPrinter helpPrinter;
-	private final PreferenceManager preferences;
+	private final JUPreferencesPersistence persistence;
 
-	public DefaultDirectoryProcessor(final HelpPrinter helpPrinter, PreferenceManager preferences) {
+	public DefaultDirectoryProcessor(final HelpPrinter helpPrinter, JUPreferencesPersistence persistence) {
 		this.helpPrinter = helpPrinter;
-		this.preferences = preferences;
+		this.persistence = persistence;
 	}
 
 	@Override
@@ -50,12 +51,11 @@ public class DefaultDirectoryProcessor implements Processor<Path> {
 
 			// we only get 'default' as command thus we want to print the default directory
 			if (filterArgs == null) {
-				final String suggestion = Paths.get("").toAbsolutePath().toString();
-				final String defaultDirectory = preferences.get(PREF_KEY, suggestion);
-				if (suggestion.equals(defaultDirectory)) {
+				final String defaultDirectory = persistence.retrieve();
+				if (defaultDirectory.isEmpty()) {
 					LOGGER.warn("Default directory has yet to be set. Defaulting to current working directory. Use the option 'default <directory>'.");
 				}
-				final Path defaultDirectoryPath = Paths.get(defaultDirectory);
+				final Path defaultDirectoryPath = Paths.get(defaultDirectory).toAbsolutePath();
 
 				LOGGER.info("Default directory: " + defaultDirectoryPath.toString());
 
@@ -74,7 +74,7 @@ public class DefaultDirectoryProcessor implements Processor<Path> {
 				final String maybeDirectory = filterArgs[0];
 				final Path defaultDirectoryPath = Paths.get(maybeDirectory).toAbsolutePath();
 				final String stringified = defaultDirectoryPath.toString();
-				preferences.put(PREF_KEY, stringified);
+				persistence.persist(stringified);
 
 				LOGGER.info("Stored '" + stringified + "' as default directory.");
 

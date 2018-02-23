@@ -1,6 +1,5 @@
-package de.thatsich.autosort.cli.alias;
+package de.thatsich.autosort.cli;
 
-import de.thatsich.autosort.cli.URLEncoderConverterService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

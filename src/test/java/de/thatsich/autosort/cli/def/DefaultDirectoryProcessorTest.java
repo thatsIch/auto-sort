@@ -1,6 +1,7 @@
-package de.thatsich.autosort.cli;
+package de.thatsich.autosort.cli.def;
 
-import de.thatsich.autosort.PreferenceManager;
+import de.thatsich.autosort.cli.HelpPrinter;
+import de.thatsich.autosort.cli.JUPreferencesPersistence;
 import org.apache.commons.cli.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -26,8 +27,8 @@ class DefaultDirectoryProcessorTest {
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
 		this.preferences = Preferences.userNodeForPackage(DefaultDirectoryProcessorTest.class);
-		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
-		this.defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
+		final JUPreferencesPersistence persistence = new JUPreferencesPersistence("default", preferences);
+		this.defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, persistence);
 		final Option option = defaultDirectoryProcessor.constructOption();
 		options.addOption(option);
 	}
@@ -40,11 +41,10 @@ class DefaultDirectoryProcessorTest {
 	@Test
 	void constructOption() {
 		final HelpFormatter formatter = new HelpFormatter();
-		final Options options = new Options();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		final Preferences preferences = Preferences.userNodeForPackage(DefaultDirectoryProcessorTest.class);
-		final PreferenceManager preferenceManager = new PreferenceManager(preferences);
-		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, preferenceManager);
+		final JUPreferencesPersistence persistence = new JUPreferencesPersistence("default", preferences);
+		final DefaultDirectoryProcessor defaultDirectoryProcessor = new DefaultDirectoryProcessor(helpPrinter, persistence);
 
 		final Option constructedOption = defaultDirectoryProcessor.constructOption();
 

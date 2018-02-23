@@ -25,7 +25,7 @@ class AliasRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		this.preferences = Preferences.userNodeForPackage(AliasRepositoryTest.class);
-		final Persistence persistence = new JUPreferencesPersistence(preferences);
+		final Persistence persistence = new JUPreferencesPersistence("alias", preferences);
 		final PathConverterService pathConverterService = new PathConverterService();
 		final URLEncoderConverterService aliasConverterService = new URLEncoderConverterService();
 		this.aliasRepository = new AliasRepository(persistence, pathConverterService, aliasConverterService);

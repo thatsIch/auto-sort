@@ -1,6 +1,8 @@
 package de.thatsich.autosort.cli.alias;
 
 import de.thatsich.autosort.cli.HelpPrinter;
+import de.thatsich.autosort.cli.Processor;
+import de.thatsich.autosort.cli.Repository;
 import org.apache.commons.cli.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,13 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 
 class AliasProcessorTest {
 
-	private AliasProcessor aliasProcessor;
+	private Processor<Void> aliasProcessor;
 	private DefaultParser argsParser;
 	private Options options;
-	private NonPersistentPathRepository repository;
+	private Repository<String, Path> repository;
 
 //	@Rule
 //	public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();

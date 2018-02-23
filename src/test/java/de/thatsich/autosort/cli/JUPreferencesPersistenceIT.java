@@ -25,7 +25,7 @@ class JUPreferencesPersistenceIT {
 
 	@Test
 	void testPersistRetrieve() {
-		final Persistence persistence = new JUPreferencesPersistence(this.preferences);
+		final Persistence persistence = new JUPreferencesPersistence("demo", this.preferences);
 		final String expected = "Test";
 		persistence.persist(expected);
 		final String actual = persistence.retrieve();
@@ -35,7 +35,7 @@ class JUPreferencesPersistenceIT {
 
 	@Test
 	void testRetrieveWithoutPersist() {
-		final Persistence  persistence = new JUPreferencesPersistence(this.preferences);
+		final Persistence  persistence = new JUPreferencesPersistence("demo", this.preferences);
 		final String expected = "";
 		final String actual = persistence.retrieve();
 
@@ -47,7 +47,7 @@ class JUPreferencesPersistenceIT {
 		// given
 		final String expected = "Test";
 		this.preferences.put("alias", expected);
-		final JUPreferencesPersistence persistence = new JUPreferencesPersistence(this.preferences);
+		final JUPreferencesPersistence persistence = new JUPreferencesPersistence("demo", this.preferences);
 
 		// when
 		final String actual = persistence.retrieve();

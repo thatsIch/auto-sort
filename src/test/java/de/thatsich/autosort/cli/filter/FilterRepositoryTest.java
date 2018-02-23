@@ -22,7 +22,7 @@ class FilterRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		this.preferences = Preferences.userNodeForPackage(FilterRepositoryTest.class);
-		final Persistence persistence = new JUPreferencesPersistence(preferences);
+		final Persistence persistence = new JUPreferencesPersistence("filter", preferences);
 		final URLEncoderConverterService aliasConverterService = new URLEncoderConverterService();
 		this.filterRepository = new FilterRepository(persistence, aliasConverterService);
 	}
