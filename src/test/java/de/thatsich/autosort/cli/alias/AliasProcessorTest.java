@@ -14,6 +14,10 @@ class AliasProcessorTest {
 	private AliasProcessor aliasProcessor;
 	private DefaultParser argsParser;
 	private Options options;
+	private NonPersistentRepository repository;
+
+//	@Rule
+//	public final SystemOutRule systemOutRule = new SystemOutRule().enableLog();
 
 	@BeforeEach
 	void setUp() {
@@ -21,7 +25,7 @@ class AliasProcessorTest {
 		this.options = new Options();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
-		final NonPersistentRepository repository = new NonPersistentRepository();
+		this.repository = new NonPersistentRepository();
 		this.aliasProcessor = new AliasProcessor(helpPrinter, repository);
 		final Option option = aliasProcessor.constructOption();
 		options.addOption(option);
@@ -74,4 +78,99 @@ class AliasProcessorTest {
 		// then
 		Assertions.assertThrows(IllegalStateException.class, process);
 	}
+
+
+	@Test
+	void processCommandLine_unknownSubCommand_shouldThrow() throws ParseException {
+		// given
+
+		// when
+		final String[] args = {"--alias", "unknown", "sub", "command"};
+		final CommandLine cl = argsParser.parse(options, args);
+		final Executable process = () ->  this.aliasProcessor.processCommandLine(cl);
+
+		// then
+		Assertions.assertThrows(IllegalStateException.class, process);
+	}
+
+	@Test
+	void processCommandLine_list_shouldPrint() throws ParseException, UnsupportedEncodingException {
+		// given
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
+		final CommandLine addCL = argsParser.parse(options, addArgs);
+		this.aliasProcessor.processCommandLine(addCL);
+
+		// when
+		final String[] listArgs = {"--alias", "list"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.aliasProcessor.processCommandLine(listCL);
+
+		// then
+//		System.out.println("systemOutRule = " + systemOutRule.getLog());
+		// this doesnt work!?!!?
+//		Assertions.assertTrue(systemOutRule.getLog().contains("test"));
+	}
+
+	@Test
+	void processCommandLine_deletingWithPresent_shouldDelete() throws ParseException, UnsupportedEncodingException {
+		// given
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
+		final CommandLine addCL = argsParser.parse(options, addArgs);
+		this.aliasProcessor.processCommandLine(addCL);
+
+		// when
+		final String[] listArgs = {"--alias", "delete", "test"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.aliasProcessor.processCommandLine(listCL);
+
+		// then
+		Assertions.assertFalse(this.repository.find("delete").isPresent());
+	}
+
+	@Test
+	void processCommandLine_deletingNotPresent_shouldWarn() throws ParseException, UnsupportedEncodingException {
+		// given
+
+		// when
+		final String[] listArgs = {"--alias", "delete", "test"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.aliasProcessor.processCommandLine(listCL);
+
+		// then
+		Assertions.assertFalse(this.repository.find("delete").isPresent());
+		// also test logging
+	}
+
+	@Test
+	void processCommandLine_addingNew_shouldAdd() throws ParseException, UnsupportedEncodingException {
+		// given
+
+		// when
+		final String[] listArgs = {"--alias", "add", "test", "D:\\Download"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.aliasProcessor.processCommandLine(listCL);
+
+		// then
+		Assertions.assertTrue(this.repository.find("test").isPresent());
+		// also test logging
+	}
+
+	@Test
+	void processCommandLine_addingDuplicate_shouldWarn() throws ParseException, UnsupportedEncodingException {
+		// given
+		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
+		final CommandLine addCL = argsParser.parse(options, addArgs);
+		this.aliasProcessor.processCommandLine(addCL);
+
+		// when
+		final String[] listArgs = {"--alias", "add", "test", "D:\\New"};
+		final CommandLine listCL = argsParser.parse(options, listArgs);
+		this.aliasProcessor.processCommandLine(listCL);
+
+		// then
+		Assertions.assertTrue(this.repository.find("test").isPresent());
+		// also test logging
+	}
+
+
 }

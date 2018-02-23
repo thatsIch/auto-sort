@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class AliasProcessor implements Processor<Void> {
@@ -67,30 +68,61 @@ public class AliasProcessor implements Processor<Void> {
 			}
 
 			final String subCommand = aliasArgs[0];
-			if (subCommand.equals(ADD_ARGS[0])) {
-				// guard against uniqueness?
-				final String alias = aliasArgs[1];
-				final Optional<Path> binding = this.repository.find(alias);
-				if (binding.isPresent()) {
-					LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
-				} else {
-					final String destination = aliasArgs[2];
+			final boolean processed = this.tryAdding(subCommand, aliasArgs) ||
+					this.tryDeleting(subCommand, aliasArgs) ||
+					this.tryListing(subCommand);
 
-					this.repository.persist(alias, Paths.get(destination));
-				}
-			} else if (subCommand.equals(DEL_ARGS[0])) {
-				final String alias = aliasArgs[1];
-
-				final Optional<Path> binding = this.repository.remove(alias);
-				if (!binding.isPresent()) {
-					LOGGER.warn("No binding found for alias '" + alias + "'.");
-				}
-			} else if (subCommand.equals(LIST_ARGS[0])) {
-				this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
+			if (!processed) {
+				final String message = "processing command 'alias' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(aliasArgs)+"'.";
+				LOGGER.error(message);
+				throw new IllegalStateException(message);
 			}
 		}
 
 		// passing through
 		return null;
+	}
+
+	private boolean tryAdding(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
+		if (subCommand.equals(ADD_ARGS[0])) {
+			final String alias = aliasArgs[1];
+			final Optional<Path> binding = this.repository.find(alias);
+			if (binding.isPresent()) {
+				LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
+			} else {
+				final String destination = aliasArgs[2];
+
+				this.repository.persist(alias, Paths.get(destination));
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean tryDeleting(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
+		if (subCommand.equals(DEL_ARGS[0])) {
+			final String alias = aliasArgs[1];
+
+			final Optional<Path> binding = this.repository.remove(alias);
+			if (!binding.isPresent()) {
+				LOGGER.warn("No binding found for alias '" + alias + "'.");
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean tryListing(String subCommand) {
+		if (subCommand.equals(LIST_ARGS[0])) {
+			this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
+
+			return true;
+		}
+
+		return false;
 	}
 }
