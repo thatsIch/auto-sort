@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.StringJoiner;
@@ -44,9 +45,9 @@ public class AliasProcessor implements Processor<Void> {
 
 
 	private final HelpPrinter helpPrinter;
-	private final AliasRepository repository;
+	private final Repository<String, Path> repository;
 
-	public AliasProcessor(final HelpPrinter helpPrinter, AliasRepository repository) {
+	public AliasProcessor(final HelpPrinter helpPrinter, Repository<String, Path> repository) {
 		this.helpPrinter = helpPrinter;
 		this.repository = repository;
 	}
@@ -70,24 +71,26 @@ public class AliasProcessor implements Processor<Void> {
 				final Options options = new Options();
 				options.addOption(this.constructOption());
 				this.helpPrinter.printOptions(options);
+
+				throw new IllegalStateException("Too many arguments. Alias requires at most '" + MAX_ARGS + "' arguments.");
 			}
-			else {
-				final String subCommand = aliasArgs[0];
-				if (subCommand.equals(ADD_ARGS[0])) {
-					final String alias = aliasArgs[1];
-					final String destination = aliasArgs[2];
+			
+			final String subCommand = aliasArgs[0];
+			if (subCommand.equals(ADD_ARGS[0])) {
+				final String alias = aliasArgs[1];
+				final String destination = aliasArgs[2];
 
-					this.repository.persist(alias, Paths.get(destination));
-				} else if (subCommand.equals(DEL_ARGS[0])) {
-					final String alias = aliasArgs[1];
+				this.repository.persist(alias, Paths.get(destination));
+			} else if (subCommand.equals(DEL_ARGS[0])) {
+				final String alias = aliasArgs[1];
 
-					this.repository.remove(alias);
-				} else if (subCommand.equals(LIST_ARGS[0])) {
-					this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
-				}
+				this.repository.remove(alias);
+			} else if (subCommand.equals(LIST_ARGS[0])) {
+				this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
 			}
 		}
 
+		// passing through
 		return null;
 	}
 }

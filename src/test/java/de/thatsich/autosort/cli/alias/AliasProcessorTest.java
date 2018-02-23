@@ -2,19 +2,15 @@ package de.thatsich.autosort.cli.alias;
 
 import de.thatsich.autosort.cli.HelpPrinter;
 import org.apache.commons.cli.*;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
 import java.io.UnsupportedEncodingException;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 class AliasProcessorTest {
 
-	private Preferences preferences;
 	private AliasProcessor aliasProcessor;
 	private DefaultParser argsParser;
 	private Options options;
@@ -25,19 +21,10 @@ class AliasProcessorTest {
 		this.options = new Options();
 		final HelpPrinter helpPrinter = new HelpPrinter(formatter);
 		this.argsParser = new DefaultParser();
-		this.preferences = Preferences.userNodeForPackage(AliasProcessorTest.class);
-		final AliasJUPreferencesPersistence persistence = new AliasJUPreferencesPersistence(preferences);
-		final PathConverterService pathConverterService = new PathConverterService();
-		final URLEncoderAliasConverterService aliasConverterService = new URLEncoderAliasConverterService();
-		final AliasRepository aliasRepository = new AliasRepository(persistence, pathConverterService, aliasConverterService);
-		this.aliasProcessor = new AliasProcessor(helpPrinter, aliasRepository);
+		final NonPersistentRepository repository = new NonPersistentRepository();
+		this.aliasProcessor = new AliasProcessor(helpPrinter, repository);
 		final Option option = aliasProcessor.constructOption();
 		options.addOption(option);
-	}
-
-	@AfterEach
-	void tearDown() throws BackingStoreException {
-		preferences.clear();
 	}
 
 	@Test
@@ -73,5 +60,18 @@ class AliasProcessorTest {
 
 		// then
 		Assertions.assertThrows(MissingArgumentException.class, process);
+	}
+
+	@Test
+	void processCommandLine_tooManyFlags_shouldThrow() throws ParseException {
+		// given
+
+		// when
+		final String[] args = {"--alias", "just", "too", "many", "args", "more", "than", "expected"};
+		final CommandLine cl = argsParser.parse(options, args);
+		final Executable process = () ->  this.aliasProcessor.processCommandLine(cl);
+
+		// then
+		Assertions.assertThrows(IllegalStateException.class, process);
 	}
 }

@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.*;
 
-public class AliasRepository {
+public class AliasRepository implements Repository<String, Path> {
 
 	private final Persistence persistence;
 	private final PathConverterService pathConverter;
@@ -20,6 +20,7 @@ public class AliasRepository {
 		this.cache = new HashMap<>();
 	}
 
+	@Override
 	public void persist(String alias, Path path) throws UnsupportedEncodingException {
 		if (cache.isEmpty()) {
 			final String encoded = this.persistence.retrieve();
@@ -32,10 +33,12 @@ public class AliasRepository {
 		this.persistCache();
 	}
 
+	@Override
 	public Optional<Path> find(String alias) {
 		return Optional.ofNullable(this.cache.get(alias));
 	}
 
+	@Override
 	public Optional<Path> remove(String alias) throws UnsupportedEncodingException {
 		final Optional<Path> removed = Optional.ofNullable(this.cache.remove(alias));
 		if (removed.isPresent()) {
@@ -45,6 +48,7 @@ public class AliasRepository {
 		return removed;
 	}
 
+	@Override
 	public Map<String, Path> unmodifiable() {
 		return Collections.unmodifiableMap(this.cache);
 	}
