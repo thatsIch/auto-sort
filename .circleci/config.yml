@@ -42,6 +42,7 @@ jobs:
       # run xxx coveralls:report
       - run: curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
       - run: chmod +x ./cc-test-reporter
+      - run: ./cc-test-reporter
       - run: ./cc-test-reporter before-build
 
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report
