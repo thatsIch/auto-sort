@@ -23,7 +23,7 @@ class PathUnifiacationServiceTest {
 	}
 
 	@Test
-	void uniquefy_withoutExtension_shouldWork() {
+	void uniquefyWithoutExtensionShouldWork() {
 		// given
 		final PathUnifiacationService service = new PathUnifiacationService();
 
