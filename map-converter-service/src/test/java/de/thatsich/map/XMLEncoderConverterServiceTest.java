@@ -24,6 +24,10 @@ class XMLEncoderConverterServiceTest {
 		final MapConverterService converterService = new XMLEncoderConverterService();
 		final Map<String, String> empty = new HashMap<>();
 
-		Assertions.assertEquals(converterService.encode(empty), "");
+		Assertions.assertEquals(converterService.encode(empty),
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<java version=\"9.0.1\" class=\"java.beans.XMLDecoder\">\n" +
+				" <object class=\"java.util.HashMap\"/>\n" +
+				"</java>\n");
 	}
 }
