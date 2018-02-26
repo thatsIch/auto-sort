@@ -65,10 +65,11 @@ class AliasProcessorTest {
 
 		// when
 		final String[] args = {"--alias"};
-		final Executable process = () -> argsParser.parse(options, args);
+		final ThrowableAssert.ThrowingCallable process = () -> argsParser.parse(options, args);
 
 		// then
-		Assertions.assertThrows(MissingArgumentException.class, process);
+		org.assertj.core.api.Assertions.assertThatThrownBy(process)
+				.isInstanceOf(MissingArgumentException.class);
 	}
 
 	@Test
@@ -95,7 +96,8 @@ class AliasProcessorTest {
 		final ThrowableAssert.ThrowingCallable process = () ->  this.aliasProcessor.processCommandLine(cl);
 
 		// then
-		org.assertj.core.api.Assertions.assertThatThrownBy(process).hasMessageContaining("unknown");
+		org.assertj.core.api.Assertions.assertThatThrownBy(process)
+				.hasMessageContaining("unknown");
 	}
 
 	@Test
