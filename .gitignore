@@ -3,14 +3,9 @@
 
 # include projects
 !pom.xml
-!unification-service/src
-!unification-service/pom.xml
-
-!map-converter-service/src
-!map-converter-service/pom.xml
-
-!autosort/src
-!autosort/pom.xml
+!unification-service/
+!map-converter-service/
+!autosort/
 
 # include README.md and meta files
 !README.md
