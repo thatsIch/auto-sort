@@ -43,7 +43,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_noArgs_doesNothing() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineNoArgsDoesNothing() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -59,7 +59,7 @@ class AliasProcessorTest {
 	 * This is generally guarded by the CLI
 	 */
 	@Test
-	void processCommandLine_onlyFlag_shouldNotWork() {
+	void processCommandLineOnlyFlagShouldNotWork() {
 		// given
 
 		// when
@@ -71,7 +71,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_tooManyFlags_shouldThrow() throws ParseException {
+	void processCommandLineTooManyFlagsShouldThrow() throws ParseException {
 		// given
 
 		// when
@@ -85,7 +85,7 @@ class AliasProcessorTest {
 
 
 	@Test
-	void processCommandLine_unknownSubCommand_shouldThrow() throws ParseException {
+	void processCommandLineUnknownSubCommandShouldThrow() throws ParseException {
 		// given
 
 		// when
@@ -98,7 +98,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_list_shouldPrint() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineListShouldPrint() throws ParseException, UnsupportedEncodingException {
 		// given
 		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
@@ -116,7 +116,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_deletingWithPresent_shouldDelete() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineDeletingWithPresentShouldDelete() throws ParseException, UnsupportedEncodingException {
 		// given
 		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
@@ -132,7 +132,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_deletingNotPresent_shouldWarn() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineDeletingNotPresentShouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -146,7 +146,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_addingNew_shouldAdd() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineAddingNewShouldAdd() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -160,7 +160,7 @@ class AliasProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_addingDuplicate_shouldWarn() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineAddingDuplicateShouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
 		final String[] addArgs = {"--alias", "add", "test", "D:\\Download"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
@@ -175,6 +175,4 @@ class AliasProcessorTest {
 		Assertions.assertTrue(this.repository.find("test").isPresent());
 		// also test logging
 	}
-
-
 }
