@@ -41,7 +41,7 @@ jobs:
       # coveralls currently buggy
       # run xxx coveralls:report
 
-      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test jacoco:report
+      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
       - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
       - run: bash <(curl -s https://codecov.io/bash)
 
