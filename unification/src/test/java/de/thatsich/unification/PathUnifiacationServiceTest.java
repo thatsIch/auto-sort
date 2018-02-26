@@ -21,4 +21,18 @@ class PathUnifiacationServiceTest {
 		// then
 		Assertions.assertNotEquals(start, unique);
 	}
+
+	@Test
+	void uniquefy_withoutExtension_shouldWork() {
+		// given
+		final PathUnifiacationService service = new PathUnifiacationService();
+
+		final Path start = Paths.get("").toAbsolutePath().resolve("LICENSE");
+
+		// when
+		final Path unique = service.uniquefy(start);
+
+		// then
+		Assertions.assertNotEquals(start, unique);
+	}
 }
