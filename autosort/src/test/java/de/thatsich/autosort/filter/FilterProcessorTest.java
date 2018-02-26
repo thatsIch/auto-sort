@@ -40,7 +40,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_noInput_shouldDoNothing() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineNoInputShouldDoNothing() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -53,7 +53,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withFlag_throwsExceptionByFramework() {
+	void processCommandLineWithFlagThrowsExceptionByFramework() {
 		// given
 
 		// when
@@ -65,7 +65,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withTooManyFlags_throwsException() throws ParseException {
+	void processCommandLineWithTooManyFlagsThrowsException() throws ParseException {
 		// given
 //		System.setOut(new PrintStream());
 
@@ -79,7 +79,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withUnknownArg_throwsException() throws ParseException {
+	void processCommandLineWithUnknownArgThrowsException() throws ParseException {
 		// given
 //		System.setOut(new PrintStream());
 
@@ -93,7 +93,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withCorrectAdd_shouldAdd() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineWithCorrectAddShouldAdd() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -107,7 +107,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_addingDuplicate_shouldWarn() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineAddingDuplicateShouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
 		final String[] firstArgs = {"--filter", "add", "*.mp4", "D:\\Download\\Anime"};
 		final CommandLine firstCL = argsParser.parse(options, firstArgs);
@@ -124,7 +124,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withCorrectRemove_shouldWork() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineWithCorrectRemoveShouldWork() throws ParseException, UnsupportedEncodingException {
 		// given
 		final String[] addArgs = {"--filter", "add", "*.mp4", "D:\\Download\\Anime"};
 		final CommandLine addCL = argsParser.parse(options, addArgs);
@@ -140,7 +140,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_deletingNotPresent_shouldWarn() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineDeletingNotPresentShouldWarn() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
@@ -154,7 +154,7 @@ class FilterProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withList_prints() throws ParseException, UnsupportedEncodingException {
+	void processCommandLineWithListPrints() throws ParseException, UnsupportedEncodingException {
 		// given
 
 		// when
