@@ -2,9 +2,15 @@
 /*
 
 # include projects
-!src/
-!unification/src
+!pom.xml
+!unification-service/src
+!unification-service/pom.xml
 
+!map-converter-service/src
+!map-converter-service/pom.xml
+
+!autosort/src
+!autosort/pom.xml
 
 # include README.md and meta files
 !README.md
@@ -12,10 +18,6 @@
 
 # include git important files
 !.gitignore
-
-# include maven files
-!pom.xml
-!unification/pom.xml
 
 # include build related files
 !.circleci
