@@ -18,8 +18,6 @@ class PathUnifiacationServiceTest {
 		// when
 		final Path unique = service.uniquefy(start);
 
-		System.out.println("unique = " + Paths.get("D:\\").resolve(unique));
-
 		// then
 		Assertions.assertNotEquals(start, unique);
 	}
