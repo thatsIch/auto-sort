@@ -17,8 +17,7 @@ public class PathUnifiacationService {
 		final String uniqueFactor = randomUUID().toString();
 
 		final String uniqueName = base + "-" + uniqueFactor + (hasExtension? "." + extension : "");
-		final Path uniquePath = Paths.get(uniqueName);
 
-		return uniquePath;
+		return Paths.get(uniqueName);
 	}
 }
