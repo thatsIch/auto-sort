@@ -3,6 +3,7 @@
 
 # include projects
 !src/
+!unification
 
 # include README.md and meta files
 !README.md

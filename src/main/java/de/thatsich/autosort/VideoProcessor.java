@@ -3,6 +3,7 @@ package de.thatsich.autosort;
 import de.thatsich.autosort.parser.AliasParser;
 import de.thatsich.autosort.parser.PropertiesLoader;
 import de.thatsich.autosort.parser.TargetDestinationParser;
+import de.thatsich.unification.PathUnifiacationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.UUID.randomUUID;
-
 /**
  * @author thatsIch (thatsich@mail.de)
  * @version 1.0-SNAPSHOT 15.01.2018
@@ -24,6 +23,12 @@ import static java.util.UUID.randomUUID;
 public class VideoProcessor {
 
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	private final PathUnifiacationService unifiacationService;
+
+	VideoProcessor(PathUnifiacationService unifiacationService) {
+		this.unifiacationService = unifiacationService;
+	}
 
 	public void process(Path workingDirectory) throws IOException {
 		final List<Path> videos = Files.walk(workingDirectory, 1)
@@ -64,9 +69,9 @@ public class VideoProcessor {
 								LOGGER.info("Deleted.");
 							} else {
 								LOGGER.info("\t\tFound different size: starting unification.");
-								final String uniqueFileName = fileName.replace(".mp4", " " + randomUUID().toString() + ".mp4");
-								LOGGER.info("\t\tUnique name: " + uniqueFileName);
-								final Path moved = Files.move(file, dest.resolve(uniqueFileName));
+								final Path unique = unifiacationService.uniquefy(file);
+								LOGGER.info("\t\tUnique name: " + unique);
+								final Path moved = Files.move(file, dest.resolve(unique));
 								LOGGER.info("\t\tMoved: " + moved);
 							}
 						} catch (IOException el) {

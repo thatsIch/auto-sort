@@ -1,12 +1,15 @@
 package de.thatsich.autosort;
 
+import de.thatsich.autosort.cli.HelpPrinter;
 import de.thatsich.autosort.cli.JUPreferencesPersistence;
 import de.thatsich.autosort.cli.URLEncoderConverterService;
-import de.thatsich.autosort.cli.alias.*;
+import de.thatsich.autosort.cli.alias.AliasProcessor;
+import de.thatsich.autosort.cli.alias.AliasRepository;
+import de.thatsich.autosort.cli.alias.PathConverterService;
 import de.thatsich.autosort.cli.def.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.filter.FilterProcessor;
-import de.thatsich.autosort.cli.HelpPrinter;
 import de.thatsich.autosort.cli.filter.FilterRepository;
+import de.thatsich.unification.PathUnifiacationService;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -88,7 +91,8 @@ public class Main {
 		aliasProcessor.processCommandLine(cl);
 		filterProcessor.processCommandLine(cl);
 
-		final VideoProcessor videoProcessor = new VideoProcessor();
+		final PathUnifiacationService unifiacationService = new PathUnifiacationService();
+		final VideoProcessor videoProcessor = new VideoProcessor(unifiacationService);
 		videoProcessor.process(workingDirectory);
 
 //		boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean(). getInputArguments().toString().contains("-agentlib:jdwp");

@@ -1,4 +1,4 @@
-package de.thatsich.autosort;
+package de.thatsich.unification;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 import static java.util.UUID.randomUUID;
 
-public class UnifiacationService {
+public class PathUnifiacationService {
 	public Path uniquefy(Path file) {
 		final String fileName = file.getFileName().toString();
 
