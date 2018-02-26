@@ -52,7 +52,16 @@ class AliasRepositoryTest {
 	}
 
 	@Test
-	void find() {
+	void find() throws UnsupportedEncodingException {
+		// given
+		final Path expected = Paths.get("D:\\Download");
+		aliasRepository.persist("Test", expected);
+
+		// when
+		final Optional<Path> finding = aliasRepository.find("Test");
+
+		// then
+		Assertions.assertEquals(Optional.of(expected), finding);
 	}
 
 	@Test
