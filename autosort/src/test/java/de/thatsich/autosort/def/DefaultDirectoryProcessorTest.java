@@ -53,7 +53,7 @@ class DefaultDirectoryProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_getter_shouldWork() throws ParseException {
+	void processCommandLineGetterShouldWork() throws ParseException {
 		// given
 
 		// when
@@ -66,7 +66,7 @@ class DefaultDirectoryProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_setter_shouldWork() throws ParseException {
+	void processCommandLineSetterShouldWork() throws ParseException {
 		// given
 
 		// when
@@ -79,7 +79,7 @@ class DefaultDirectoryProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_getterAfterSetter_shouldWork() throws ParseException {
+	void processCommandLineGetterAfterSetterShouldWork() throws ParseException {
 		// given
 
 		// when
@@ -100,7 +100,7 @@ class DefaultDirectoryProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withTooManyArgs_shouldThrow() throws ParseException {
+	void processCommandLineWithTooManyArgsShouldThrow() throws ParseException {
 		// given
 
 		// when
@@ -113,7 +113,7 @@ class DefaultDirectoryProcessorTest {
 	}
 
 	@Test
-	void processCommandLine_withoutFlag_doNothing() throws ParseException {
+	void processCommandLineWithoutFlagDoNothing() throws ParseException {
 		// given
 
 		// when
