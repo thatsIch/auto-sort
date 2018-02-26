@@ -43,13 +43,5 @@
             <version>${version.log4j}</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- testing -->
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.9.0</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>
