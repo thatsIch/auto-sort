@@ -10,8 +10,8 @@ import java.util.Map;
 class XMLEncoderConverterServiceTest {
 
 	@Test
-	void reverse() throws UnsupportedEncodingException {
-		final XMLEncoderConverterService converterService = new XMLEncoderConverterService();
+	void both() throws UnsupportedEncodingException {
+		final MapConverterService converterService = new XMLEncoderConverterService();
 		final Map<String, String> decoded = new HashMap<>();
 		decoded.put("anime", "D:\\Download\\Anime");
 		decoded.put("love", "D:\\Love Love");
@@ -20,10 +20,10 @@ class XMLEncoderConverterServiceTest {
 	}
 
 	@Test
-	void convert() {
-	}
+	void convertEmptyMap() throws UnsupportedEncodingException {
+		final MapConverterService converterService = new XMLEncoderConverterService();
+		final Map<String, String> empty = new HashMap<>();
 
-	@Test
-	void convert1() {
+		Assertions.assertEquals(converterService.encode(empty), "");
 	}
 }
