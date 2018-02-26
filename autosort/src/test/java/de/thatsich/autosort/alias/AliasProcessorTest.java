@@ -5,6 +5,7 @@ import de.thatsich.autosort.cli.Processor;
 import de.thatsich.autosort.cli.Repository;
 import de.thatsich.autosort.cli.alias.AliasProcessor;
 import org.apache.commons.cli.*;
+import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,10 +92,10 @@ class AliasProcessorTest {
 		// when
 		final String[] args = {"--alias", "unknown", "sub", "command"};
 		final CommandLine cl = argsParser.parse(options, args);
-		final Executable process = () ->  this.aliasProcessor.processCommandLine(cl);
+		final ThrowableAssert.ThrowingCallable process = () ->  this.aliasProcessor.processCommandLine(cl);
 
 		// then
-		Assertions.assertThrows(IllegalStateException.class, process);
+		org.assertj.core.api.Assertions.assertThatThrownBy(process).hasMessageContaining("unknown");
 	}
 
 	@Test
