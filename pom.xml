@@ -57,6 +57,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- sout tools -->
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.17.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- provides detailed information upon test failure -->
         <dependency>
             <groupId>hu.advancedweb</groupId>

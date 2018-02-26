@@ -3,8 +3,8 @@
 
 # include projects
 !src/
-!unification
-unification/target
+!unification/src
+
 
 # include README.md and meta files
 !README.md
@@ -15,6 +15,7 @@ unification/target
 
 # include maven files
 !pom.xml
+!unification/pom.xml
 
 # include build related files
 !.circleci
