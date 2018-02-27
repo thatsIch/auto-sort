@@ -26,4 +26,12 @@ class URLEncoderConverterServiceTest {
 
 		Assertions.assertEquals(converterService.encode(empty), "");
 	}
+
+	@Test
+	void convertSingleLetter() throws UnsupportedEncodingException {
+		final MapConverterService converterService = new URLEncoderConverterService();
+		final Map<String, String> decoded = Map.of("k", "v");
+
+		Assertions.assertEquals(converterService.encode(decoded), "k=v");
+	}
 }
