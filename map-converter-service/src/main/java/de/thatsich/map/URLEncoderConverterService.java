@@ -18,6 +18,10 @@ public class URLEncoderConverterService implements MapConverterService {
 			final String value = entry.getValue();
 
 			if (key.isEmpty()) {
+				System.out.println("value = " + value);
+				System.out.println("mapping = " + mapping.entrySet().size());
+				System.out.println("mapping = " + mapping.keySet().size());
+
 				throw new IllegalArgumentException("An empty key is not allowed. Please use some type-safe alternatives in case you require an empty key.");
 			}
 
@@ -39,9 +43,11 @@ public class URLEncoderConverterService implements MapConverterService {
 
 		for (String nameValuePair : nameValuePairs) {
 			final String[] nameValue = nameValuePair.split("=");
-			final String decodedKey = URLDecoder.decode(nameValue[0], ENCODING);
-			final String decodedValue = nameValue.length > 1 ? URLDecoder.decode(nameValue[1], ENCODING) : "";
-			map.put(decodedKey, decodedValue);
+			if (!nameValue[0].isEmpty()) {
+				final String decodedKey = URLDecoder.decode(nameValue[0], ENCODING);
+				final String decodedValue = nameValue.length > 1 ? URLDecoder.decode(nameValue[1], ENCODING) : "";
+				map.put(decodedKey, decodedValue);
+			}
 		}
 
 		return map;
