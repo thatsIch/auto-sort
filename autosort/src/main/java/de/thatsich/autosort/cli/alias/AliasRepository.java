@@ -3,6 +3,8 @@ package de.thatsich.autosort.cli.alias;
 import de.thatsich.autosort.cli.Persistence;
 import de.thatsich.autosort.cli.Repository;
 import de.thatsich.map.MapConverterService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
@@ -12,6 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class AliasRepository implements Repository<String, Path> {
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final Persistence persistence;
 	private final PathConverterService pathConverter;
@@ -36,8 +40,13 @@ public class AliasRepository implements Repository<String, Path> {
 			this.cache.putAll(this.pathConverter.toPaths(decoded));
 		}
 
-		this.cache.put(alias, path);
-		this.persistCache();
+		if (cache.containsKey(alias)) {
+			LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + cache.get(alias) + "'.");
+		}
+		else {
+			this.cache.put(alias, path);
+			this.persistCache();
+		}
 	}
 
 	@Override

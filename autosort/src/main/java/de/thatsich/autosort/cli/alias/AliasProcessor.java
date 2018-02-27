@@ -42,7 +42,7 @@ public class AliasProcessor extends BaseProcessor<Void> {
 	}
 
 	@Override
-	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
+	public Void processCommandLine(CommandLine cl) {
 		if (cl.hasOption(getLongCommand())) {
 			final String[] aliasArgs = cl.getOptionValues(getLongCommand());
 			final String subCommand = aliasArgs[0];
@@ -50,10 +50,11 @@ public class AliasProcessor extends BaseProcessor<Void> {
 			final boolean success = this.tryTooManyArgs(aliasArgs) ||
 					this.tryAdding(subCommand, aliasArgs) ||
 					this.tryDeleting(subCommand, aliasArgs) ||
-					this.tryListing(subCommand) ||
-					this.throwError(subCommand, aliasArgs);
+					this.tryListing(subCommand);
 
-			LOGGER.info("alias processing successful: " + success);
+			if (!success) {
+				this.throwError(subCommand, aliasArgs);
+			}
 		}
 
 		// passing through
@@ -75,21 +76,14 @@ public class AliasProcessor extends BaseProcessor<Void> {
 	private boolean tryAdding(String subCommand, String[] aliasArgs) {
 		if (subCommand.equals(getAddArgs().get(0))) {
 			final String alias = aliasArgs[1];
-			final Optional<Path> binding = this.repository.find(alias);
-			if (binding.isPresent()) {
-				LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
+			final String destination = aliasArgs[2];
+
+			try {
+				this.repository.persist(alias, Paths.get(destination));
 
 				return true;
-			} else {
-				final String destination = aliasArgs[2];
-
-				try {
-					this.repository.persist(alias, Paths.get(destination));
-
-					return true;
-				} catch (UnsupportedEncodingException e) {
-					LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
-				}
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
 			}
 		}
 
@@ -126,7 +120,7 @@ public class AliasProcessor extends BaseProcessor<Void> {
 		return false;
 	}
 
-	private boolean throwError(String subCommand, String[] aliasArgs) {
+	private void throwError(String subCommand, String[] aliasArgs) {
 		throw new IllegalStateException("processing command 'alias' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(aliasArgs)+"'.");
 	}
 
