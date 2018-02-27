@@ -30,7 +30,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: mvn clean install dependency:go-offline
+      - run: mvnw clean install dependency:go-offline
 
       - save_cache:
           paths:
@@ -41,11 +41,11 @@ jobs:
       # coveralls currently buggy
       # run xxx coveralls:report
 
-      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
-      - run: mvn org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
+      - run: mvnw org.jacoco:jacoco-maven-plugin:prepare-agent test org.jacoco:jacoco-maven-plugin:report
+      - run: mvnw org.jacoco:jacoco-maven-plugin:prepare-agent-integration failsafe:integration-test -DfailIfNoTests=false
       - run: bash <(curl -s https://codecov.io/bash)
 
-      - run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar -Dsonar.organization=thatsich-github -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${SONARQUBE_TOKEN}
+      - run: mvnw org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar -Dsonar.organization=thatsich-github -Dsonar.host.url="https://sonarcloud.io" -Dsonar.login=${SONARQUBE_TOKEN}
 
       - run:
           name: Save test results

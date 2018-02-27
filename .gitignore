@@ -16,3 +16,8 @@
 
 # include build related files
 !.circleci
+
+# include maven wrappeer
+!mvnw
+!mvnw.cmd
+!.mvn/
