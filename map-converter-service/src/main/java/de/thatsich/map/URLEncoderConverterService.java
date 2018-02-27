@@ -21,7 +21,7 @@ public class URLEncoderConverterService implements MapConverterService {
 				stringBuilder.append("&");
 			}
 
-			stringBuilder.append((key != null ? URLEncoder.encode(key, ENCODING) : ""));
+			stringBuilder.append(URLEncoder.encode(key, ENCODING));
 			stringBuilder.append("=");
 			stringBuilder.append(value != null ? URLEncoder.encode(value, ENCODING) : "");
 		}
