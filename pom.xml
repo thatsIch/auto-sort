@@ -7,7 +7,7 @@
     <groupId>de.thatsich</groupId>
     <artifactId>autosort-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${global.version}</version>
 
     <modules>
         <module>map-converter-service</module>
@@ -19,10 +19,29 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <!-- Unique entry point for version number management -->
+        <global.version>1.0.0-SNAPSHOT</global.version>
+
         <version.log4j>2.10.0</version.log4j>
         <version.junit>5.0.3</version.junit>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>de.thatsich</groupId>
+                <artifactId>map-converter-service</artifactId>
+                <version>${global.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.thatsich</groupId>
+                <artifactId>unification-service</artifactId>
+                <version>${global.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- cross cutting concern dependencies -->
     <dependencies>
         <!-- logging -->
         <dependency>

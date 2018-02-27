@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>autosort</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
@@ -22,26 +21,11 @@
         <dependency>
             <groupId>de.thatsich</groupId>
             <artifactId>map-converter-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>de.thatsich</groupId>
             <artifactId>unification-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- logging -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>${version.log4j}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>${version.log4j}</version>
-            <scope>runtime</scope>
-        </dependency>
     </dependencies>
 </project>

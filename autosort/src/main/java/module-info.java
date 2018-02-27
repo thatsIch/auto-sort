@@ -4,5 +4,6 @@ module autosort {
 	requires java.prefs;
 
 	requires map.converter.service;
+	uses de.thatsich.map.MapConverterService;
 	requires unification.service;
 }

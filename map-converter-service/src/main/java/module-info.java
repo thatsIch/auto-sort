@@ -5,6 +5,5 @@ module map.converter.service {
 	requires java.desktop;
 
 	exports de.thatsich.map;
-
 	provides MapConverterService with URLEncoderConverterService;
 }

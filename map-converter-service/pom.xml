@@ -12,5 +12,33 @@
 
     <artifactId>map-converter-service</artifactId>
 
-
+    <build>
+        <plugins>
+            <!-- testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <!-- 2.20.1 does not work because of memory leak -->
+                <version>2.19.1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.platform</groupId>
+                        <artifactId>junit-platform-surefire-provider</artifactId>
+                        <version>1.0.3</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>${version.junit}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <!--
+                    no argLine here
+                    to avoid common mistake described on page http://www.jacoco.org/jacoco/trunk/doc/prepare-agent-mojo.html
+                    -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
