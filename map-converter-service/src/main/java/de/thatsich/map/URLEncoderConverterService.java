@@ -23,7 +23,7 @@ public class URLEncoderConverterService implements MapConverterService {
 
 			stringBuilder.append(URLEncoder.encode(key, ENCODING));
 			stringBuilder.append("=");
-			stringBuilder.append(value != null ? URLEncoder.encode(value, ENCODING) : "");
+			stringBuilder.append(URLEncoder.encode(value, ENCODING));
 		}
 
 		return stringBuilder.toString();
