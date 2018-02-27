@@ -48,6 +48,22 @@ class FilterRepositoryTest {
 	}
 
 	@Test
+	void persistWithCache() throws UnsupportedEncodingException {
+		// given
+		filterRepository.persist("Foo", "D:\\Download");
+		final String expected = "D:\\Download";
+
+		// when
+		filterRepository.persist("Bar", expected);
+
+		// then
+		final Optional<String> finding = filterRepository.find("Bar");
+		Assertions.assertTrue(finding.isPresent());
+		Assertions.assertEquals(expected, finding.get());
+
+	}
+
+	@Test
 	void find() throws UnsupportedEncodingException {
 		// given
 		final String expected = "D:\\Download";
@@ -71,6 +87,17 @@ class FilterRepositoryTest {
 
 		// then
 		Assertions.assertTrue(maybeRemoved.isPresent());
+	}
+
+	@Test
+	void removeNonPresentKey() throws UnsupportedEncodingException {
+		// given
+
+		// when
+		final Optional<String> maybeRemoved = filterRepository.remove("Test");
+
+		// then
+		Assertions.assertFalse(maybeRemoved.isPresent());
 	}
 
 	@Test
