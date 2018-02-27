@@ -50,16 +50,16 @@ public class DefaultDirectoryProcessor implements Processor<Path> {
 		if (cl.hasOption(LONG_COMMAND)) {
 			final String[] args = cl.getOptionValues(LONG_COMMAND);
 
-			return this.setDefaultDirectory(args)
+			return this.readDefaultDirectory(args)
 					.or(() -> this.tooManyArgs(args))
-					.or(() -> this.readDefaultDirectory(args))
+					.or(() -> this.storeDefaultDirectory(args))
 					.orElseThrow(() -> new IllegalStateException("Found an unhandled case with args '" + Arrays.toString(args)));
 		}
 
 		return null;
 	}
 
-	private Optional<Path> setDefaultDirectory(String[] args) {
+	private Optional<Path> readDefaultDirectory(String[] args) {
 		// we only get 'default' as command thus we want to print the default directory
 		if (args == null) {
 			final String defaultDirectory = persistence.retrieve();
@@ -89,20 +89,16 @@ public class DefaultDirectoryProcessor implements Processor<Path> {
 		return Optional.empty();
 	}
 
-	private Optional<Path> readDefaultDirectory(String[] args) {
+	private Optional<Path> storeDefaultDirectory(String[] args) {
 		// we have exactly the required directory
 		// we want to set the directory
-		if (args.length == 1) {
-			final String maybeDirectory = args[0];
-			final Path defaultDirectoryPath = Paths.get(maybeDirectory).toAbsolutePath();
-			final String stringified = defaultDirectoryPath.toString();
-			persistence.persist(stringified);
+		final String maybeDirectory = args[0];
+		final Path defaultDirectoryPath = Paths.get(maybeDirectory).toAbsolutePath();
+		final String stringified = defaultDirectoryPath.toString();
+		persistence.persist(stringified);
 
-			LOGGER.info("Stored '" + stringified + "' as default directory.");
+		LOGGER.info("Stored '" + stringified + "' as default directory.");
 
-			return Optional.of(defaultDirectoryPath);
-		}
-
-		return Optional.empty();
+		return Optional.of(defaultDirectoryPath);
 	}
 }
