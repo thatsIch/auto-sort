@@ -45,58 +45,72 @@ public class AliasProcessor extends BaseProcessor<Void> {
 	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
 		if (cl.hasOption(getLongCommand())) {
 			final String[] aliasArgs = cl.getOptionValues(getLongCommand());
-			if (aliasArgs.length > getMaxArgs()) {
-				final Options options = new Options();
-				options.addOption(this.constructOption());
-				this.helpPrinter.printOptions(options);
-
-				throw new IllegalStateException("Too many arguments. Alias requires at most '" + getMaxArgs() + "' arguments.");
-			}
-
 			final String subCommand = aliasArgs[0];
-			final boolean processed = this.tryAdding(subCommand, aliasArgs) ||
-					this.tryDeleting(subCommand, aliasArgs) ||
-					this.tryListing(subCommand);
 
-			if (!processed) {
-				final String message = "processing command 'alias' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(aliasArgs)+"'.";
-				LOGGER.error(message);
-				throw new IllegalStateException(message);
-			}
+			final boolean success = this.tryTooManyArgs(aliasArgs) ||
+					this.tryAdding(subCommand, aliasArgs) ||
+					this.tryDeleting(subCommand, aliasArgs) ||
+					this.tryListing(subCommand) ||
+					this.throwError(subCommand, aliasArgs);
+
+			LOGGER.info("alias processing successful: " + success);
 		}
 
 		// passing through
 		return null;
 	}
 
-	private boolean tryAdding(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
-		if (subCommand.equals(getAddArgs().get(0))) {
-			final String alias = aliasArgs[1];
-			final Optional<Path> binding = this.repository.find(alias);
-			if (binding.isPresent()) {
-				LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
-			} else {
-				final String destination = aliasArgs[2];
+	private boolean tryTooManyArgs(String[] aliasArgs) {
+		if (aliasArgs.length > getMaxArgs()) {
+			final Options options = new Options();
+			options.addOption(this.constructOption());
+			this.helpPrinter.printOptions(options);
 
-				this.repository.persist(alias, Paths.get(destination));
-			}
-
-			return true;
+			throw new IllegalStateException("Too many arguments. Alias requires at most '" + getMaxArgs() + "' arguments.");
 		}
 
 		return false;
 	}
 
-	private boolean tryDeleting(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
+	private boolean tryAdding(String subCommand, String[] aliasArgs) {
+		if (subCommand.equals(getAddArgs().get(0))) {
+			final String alias = aliasArgs[1];
+			final Optional<Path> binding = this.repository.find(alias);
+			if (binding.isPresent()) {
+				LOGGER.warn("Alias '"+alias+"' is already present with the binding '" + binding.get() + "'.");
+
+				return true;
+			} else {
+				final String destination = aliasArgs[2];
+
+				try {
+					this.repository.persist(alias, Paths.get(destination));
+
+					return true;
+				} catch (UnsupportedEncodingException e) {
+					LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private boolean tryDeleting(String subCommand, String[] aliasArgs) {
 		if (subCommand.equals(getDelArgs().get(0))) {
 			final String alias = aliasArgs[1];
 
-			final Optional<Path> binding = this.repository.remove(alias);
-			if (!binding.isPresent()) {
-				LOGGER.warn("No binding found for alias '" + alias + "'.");
-			}
+			try {
+				final Optional<Path> binding = this.repository.remove(alias);
 
-			return true;
+				if (!binding.isPresent()) {
+					LOGGER.warn("No binding found for alias '" + alias + "'.");
+				}
+
+				return true;
+			} catch (UnsupportedEncodingException e) {
+				LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
+			}
 		}
 
 		return false;
@@ -110,6 +124,10 @@ public class AliasProcessor extends BaseProcessor<Void> {
 		}
 
 		return false;
+	}
+
+	private boolean throwError(String subCommand, String[] aliasArgs) {
+		throw new IllegalStateException("processing command 'alias' but found no matching sub-command '" + subCommand + "' with args '"+ Arrays.toString(aliasArgs)+"'.");
 	}
 
 	@Override
