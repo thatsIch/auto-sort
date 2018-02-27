@@ -34,4 +34,20 @@ class URLEncoderConverterServiceTest {
 
 		Assertions.assertEquals(converterService.encode(decoded), "k=v");
 	}
+
+	@Test
+	void convertEmptyStrings() throws UnsupportedEncodingException {
+		final MapConverterService converterService = new URLEncoderConverterService();
+		final Map<String, String> decoded = Map.of("k", "");
+
+		Assertions.assertEquals(converterService.encode(decoded), "k=");
+	}
+
+	@Test
+	void convertEmptyKey() {
+		final MapConverterService converterService = new URLEncoderConverterService();
+		final Map<String, String> decoded = Map.of("", "");
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> converterService.encode(decoded));
+	}
 }

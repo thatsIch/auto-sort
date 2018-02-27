@@ -17,6 +17,10 @@ public class URLEncoderConverterService implements MapConverterService {
 			final String key = entry.getKey();
 			final String value = entry.getValue();
 
+			if (key.isEmpty()) {
+				throw new IllegalArgumentException("An empty key is not allowed. Please use some type-safe alternatives in case you require an empty key.");
+			}
+
 			if (stringBuilder.length() > 0) {
 				stringBuilder.append("&");
 			}
