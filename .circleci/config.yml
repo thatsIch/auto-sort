@@ -30,6 +30,8 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
+      # enable running wrapper
+      - run: chmod +x ./mvnw
       - run: ./mvnw clean install dependency:go-offline
 
       - save_cache:
