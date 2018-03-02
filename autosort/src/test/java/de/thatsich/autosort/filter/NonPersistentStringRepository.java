@@ -11,6 +11,11 @@ public class NonPersistentStringRepository implements Repository<String, String>
 	private final Map<String, String> internal = new HashMap<>();
 
 	@Override
+	public void initialize() {
+
+	}
+
+	@Override
 	public void persist(String s, String path) {
 		this.internal.put(s, path);
 	}

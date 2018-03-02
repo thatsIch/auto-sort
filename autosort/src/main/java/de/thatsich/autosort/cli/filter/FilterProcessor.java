@@ -9,7 +9,6 @@ import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +38,7 @@ public class FilterProcessor extends BaseProcessor<Void> {
 	}
 
 	@Override
-	public Void processCommandLine(CommandLine cl) throws UnsupportedEncodingException {
+	public Void processCommandLine(CommandLine cl) {
 		if (cl.hasOption(getLongCommand())) {
 			// can never be null because the cl filters that case
 			final String[] filterArgs = cl.getOptionValues(getLongCommand());
@@ -72,7 +71,7 @@ public class FilterProcessor extends BaseProcessor<Void> {
 		return null;
 	}
 
-	private boolean tryAdding(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
+	private boolean tryAdding(String subCommand, String[] aliasArgs) {
 		if (subCommand.equals(getAddArgs().get(0))) {
 			final String regex = aliasArgs[1];
 			final Optional<String> binding = this.repository.find(regex);
@@ -90,7 +89,7 @@ public class FilterProcessor extends BaseProcessor<Void> {
 		return false;
 	}
 
-	private boolean tryDeleting(String subCommand, String[] aliasArgs) throws UnsupportedEncodingException {
+	private boolean tryDeleting(String subCommand, String[] aliasArgs) {
 		if (subCommand.equals(getDelArgs().get(0))) {
 			final String regex = aliasArgs[1];
 

@@ -2,7 +2,6 @@ package de.thatsich.autosort.alias;
 
 import de.thatsich.autosort.cli.Repository;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,7 +12,12 @@ public class NonPersistentPathRepository implements Repository<String, Path> {
 	private final Map<String, Path> internal = new HashMap<>();
 
 	@Override
-	public void persist(String s, Path path) throws UnsupportedEncodingException {
+	public void initialize() {
+
+	}
+
+	@Override
+	public void persist(String s, Path path) {
 		this.internal.put(s, path);
 	}
 
@@ -23,7 +27,7 @@ public class NonPersistentPathRepository implements Repository<String, Path> {
 	}
 
 	@Override
-	public Optional<Path> remove(String alias) throws UnsupportedEncodingException {
+	public Optional<Path> remove(String alias) {
 		return Optional.ofNullable(this.internal.remove(alias));
 	}
 

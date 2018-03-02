@@ -9,11 +9,11 @@ import org.apache.commons.cli.Options;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AliasProcessor extends BaseProcessor<Void> {
@@ -78,13 +78,9 @@ public class AliasProcessor extends BaseProcessor<Void> {
 			final String alias = aliasArgs[1];
 			final String destination = aliasArgs[2];
 
-			try {
-				this.repository.persist(alias, Paths.get(destination));
+			this.repository.persist(alias, Paths.get(destination));
 
-				return true;
-			} catch (UnsupportedEncodingException e) {
-				LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
-			}
+			return true;
 		}
 
 		return false;
@@ -94,17 +90,13 @@ public class AliasProcessor extends BaseProcessor<Void> {
 		if (subCommand.equals(getDelArgs().get(0))) {
 			final String alias = aliasArgs[1];
 
-			try {
-				final Optional<Path> binding = this.repository.remove(alias);
+			final Optional<Path> binding = this.repository.remove(alias);
 
-				if (!binding.isPresent()) {
-					LOGGER.warn("No binding found for alias '" + alias + "'.");
-				}
-
-				return true;
-			} catch (UnsupportedEncodingException e) {
-				LOGGER.error("Requires encoding UTF-8 but is unsupported on this machine.", e);
+			if (!binding.isPresent()) {
+				LOGGER.warn("No binding found for alias '" + alias + "'.");
 			}
+
+			return true;
 		}
 
 		return false;
@@ -112,7 +104,9 @@ public class AliasProcessor extends BaseProcessor<Void> {
 
 	private boolean tryListing(String subCommand) {
 		if (subCommand.equals(getListArgs().get(0))) {
-			this.repository.unmodifiable().forEach((alias, desintation) -> LOGGER.info(alias + " -> " + desintation));
+			final Map<String, Path> aliases = this.repository.unmodifiable();
+			LOGGER.info(aliases.size() + " aliases defined:");
+			aliases.forEach((alias, desintation) -> LOGGER.info("* " + alias + " -> " + desintation));
 
 			return true;
 		}

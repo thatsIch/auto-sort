@@ -47,7 +47,9 @@ public class Main {
 		final PathConverterService pathConverterService = new PathConverterService();
 		final URLEncoderConverterService converterService = new URLEncoderConverterService();
 		final AliasRepository aliasRepository = new AliasRepository(aliasPersistence, pathConverterService, converterService);
+		aliasRepository.initialize();
 		final FilterRepository filterRepository = new FilterRepository(filterPersistence, converterService);
+		filterRepository.initialize();
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
 
@@ -63,7 +65,6 @@ public class Main {
 		options.addOption("h", "help", false, "displays help. overrides any other command.");
 
 		final CommandLine cl = argsParser.parse(options, args);
-
 
 		if (cl.hasOption("h")) {
 			helpPrinter.printOptions(options);
@@ -92,8 +93,9 @@ public class Main {
 		filterProcessor.processCommandLine(cl);
 
 		final PathUnifiacationService unifiacationService = new PathUnifiacationService();
-		final VideoProcessor videoProcessor = new VideoProcessor(unifiacationService);
-		videoProcessor.process(workingDirectory);
+		final TargetSuggester targetSuggester = new TargetSuggester();
+		final Processor processor = new Processor(unifiacationService, aliasRepository, filterRepository, targetSuggester);
+		processor.process(workingDirectory);
 
 //		boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean(). getInputArguments().toString().contains("-agentlib:jdwp");
 //		LOGGER.info(isDebug);

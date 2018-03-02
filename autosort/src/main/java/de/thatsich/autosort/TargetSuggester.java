@@ -25,8 +25,8 @@ class TargetSuggester {
 			.map(splits -> splits[0])
 			.distinct()
 			.filter(youtuber -> notInTargetToDestinations(youtuber, targetToDestination))
-			.map(youtuber -> youtuber.replace(" ", "\\ "))
-			.map(youtuber -> "\t" + youtuber + "=misc")
+			.map(youtuber -> youtuber.replace(" ", "\\s"))
+			.map(youtuber -> "\t\"" + youtuber + "\\s-\\s.*mp4\" misc")
 			.collect(Collectors.joining("\n"));
 	}
 

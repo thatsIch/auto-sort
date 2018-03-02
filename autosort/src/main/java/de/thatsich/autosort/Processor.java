@@ -1,5 +1,7 @@
 package de.thatsich.autosort;
 
+import de.thatsich.autosort.cli.alias.AliasRepository;
+import de.thatsich.autosort.cli.filter.FilterRepository;
 import de.thatsich.unification.PathUnifiacationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,42 +10,67 @@ import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * @author thatsIch (thatsich@mail.de)
- * @version 1.0-SNAPSHOT 15.01.2018
- * @since 1.0-SNAPSHOT
- */
-public class VideoProcessor {
+public class Processor {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final PathUnifiacationService unifiacationService;
+	private final AliasRepository aliasRepository;
+	private final FilterRepository filterRepository;
+	private final TargetSuggester targetSuggester;
 
-	VideoProcessor(PathUnifiacationService unifiacationService) {
+	Processor(PathUnifiacationService unifiacationService, AliasRepository aliasRepository, FilterRepository filterRepository, TargetSuggester targetSuggester) {
 		this.unifiacationService = unifiacationService;
+		this.aliasRepository = aliasRepository;
+		this.filterRepository = filterRepository;
+		this.targetSuggester = targetSuggester;
 	}
 
 	public void process(Path workingDirectory) throws IOException {
-		final List<Path> videos = Files.walk(workingDirectory, 1)
-			.filter(Files::isRegularFile)
-			.filter(file -> file.getFileName().toString().endsWith(".mp4"))
-			.collect(Collectors.toList());
+		final List<Path> files = Files.walk(workingDirectory, 1)
+				.filter(Files::isRegularFile)
+				.collect(Collectors.toList());
 
-		// TODO
-		final Map<String, Path> targetToDestination = new HashMap<>();
+		// we convert the filterings in paths which can be either real paths or using aliases
+		// alias -> destination
+		final Map<String, Path> pathings = this.aliasRepository.unmodifiable();
 
-		final TargetSuggester suggester = new TargetSuggester();
-		suggester.printSuggestions(videos, targetToDestination);
+		// regex -> destination or alias
+		final Map<String, String> filterings = filterRepository.unmodifiable();
 
-		videos.forEach(file -> {
+		// regex -> destination
+		final Map<String, Path> converted = new HashMap<>(filterings.size());
+		for (Map.Entry<String, String> filtering : filterings.entrySet()) {
+			final String regex = filtering.getKey();
+			final String pathOrAlias = filtering.getValue();
+
+			// first we check for alias
+			if (pathings.containsKey(pathOrAlias)) {
+				final Path destination = pathings.get(pathOrAlias);
+				converted.put(regex, destination);
+				// else we check if it is a path
+			} else {
+				final Path path = Paths.get(pathOrAlias);
+				if (Files.isRegularFile(path)) {
+					converted.put(regex, path);
+				// error, need to be handled
+				} else {
+					LOGGER.error("Unhandeld filtering ["+regex+", "+ pathOrAlias+"]. Considering adding an alias or provide a valid destination.");
+				}
+			}
+		}
+
+		// handle suggestions if found unmatched videos
+		for (Path file : files) {
 			final String fileName = file.getFileName().toString();
-			targetToDestination.forEach((key, dest) -> {
-				if (fileName.startsWith(key)) {
+			converted.forEach((regex, dest) -> {
+				if (fileName.matches("(?i)" + regex)) {
 					try {
 						LOGGER.info(fileName);
 						LOGGER.info("\tDestination: " + dest);
@@ -78,7 +105,14 @@ public class VideoProcessor {
 					}
 				}
 			});
-		});
+		}
+
+		final List<Path> unmoved = Files.walk(workingDirectory, 1)
+				.filter(Files::isRegularFile)
+				.collect(Collectors.toList());
+
+		LOGGER.info(unmoved.size() + " unmoved files. Suggesting filters:");
+		targetSuggester.printSuggestions(unmoved, converted);
 	}
 
 	private Path getResolvedExistingPath(Path parent, String name) throws IOException {
