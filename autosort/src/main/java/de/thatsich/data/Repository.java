@@ -1,4 +1,4 @@
-package de.thatsich.autosort.cli;
+package de.thatsich.data;
 
 import java.util.Map;
 import java.util.Optional;

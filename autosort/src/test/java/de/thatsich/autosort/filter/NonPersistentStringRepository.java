@@ -1,6 +1,6 @@
 package de.thatsich.autosort.filter;
 
-import de.thatsich.autosort.cli.Repository;
+import de.thatsich.data.Repository;
 
 import java.util.Collections;
 import java.util.HashMap;

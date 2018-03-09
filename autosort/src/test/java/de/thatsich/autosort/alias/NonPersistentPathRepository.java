@@ -1,6 +1,6 @@
 package de.thatsich.autosort.alias;
 
-import de.thatsich.autosort.cli.Repository;
+import de.thatsich.data.Repository;
 
 import java.nio.file.Path;
 import java.util.Collections;

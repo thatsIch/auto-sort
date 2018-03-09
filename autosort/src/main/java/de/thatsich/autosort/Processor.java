@@ -1,7 +1,7 @@
 package de.thatsich.autosort;
 
 import de.thatsich.autosort.cli.alias.AliasRepository;
-import de.thatsich.autosort.cli.filter.FilterRepository;
+import de.thatsich.data.Repository;
 import de.thatsich.unification.PathUnifiacationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,10 +22,10 @@ public class Processor {
 
 	private final PathUnifiacationService unifiacationService;
 	private final AliasRepository aliasRepository;
-	private final FilterRepository filterRepository;
+	private final Repository<String, String> filterRepository;
 	private final TargetSuggester targetSuggester;
 
-	Processor(PathUnifiacationService unifiacationService, AliasRepository aliasRepository, FilterRepository filterRepository, TargetSuggester targetSuggester) {
+	Processor(PathUnifiacationService unifiacationService, AliasRepository aliasRepository, Repository<String, String> filterRepository, TargetSuggester targetSuggester) {
 		this.unifiacationService = unifiacationService;
 		this.aliasRepository = aliasRepository;
 		this.filterRepository = filterRepository;

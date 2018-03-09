@@ -2,7 +2,7 @@ package de.thatsich.autosort.alias;
 
 import de.thatsich.autosort.cli.HelpPrinter;
 import de.thatsich.autosort.cli.Processor;
-import de.thatsich.autosort.cli.Repository;
+import de.thatsich.data.Repository;
 import de.thatsich.autosort.cli.alias.AliasProcessor;
 import org.apache.commons.cli.*;
 import org.junit.jupiter.api.Assertions;

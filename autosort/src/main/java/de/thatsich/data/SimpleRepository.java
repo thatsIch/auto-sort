@@ -1,7 +1,6 @@
-package de.thatsich.autosort.cli.filter;
+package de.thatsich.data;
 
 import de.thatsich.autosort.cli.Persistence;
-import de.thatsich.autosort.cli.Repository;
 import de.thatsich.map.MapConverterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,8 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class FilterRepository implements Repository<String, String> {
-
+public final class SimpleRepository implements Repository<String, String> {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final Persistence persistence;
@@ -20,7 +18,7 @@ public class FilterRepository implements Repository<String, String> {
 
 	private final Map<String, String> cache;
 
-	public FilterRepository(Persistence persistence, MapConverterService aliasConverter) {
+	public SimpleRepository(Persistence persistence, MapConverterService aliasConverter) {
 		this.persistence = persistence;
 		this.aliasConverter = aliasConverter;
 
@@ -39,8 +37,13 @@ public class FilterRepository implements Repository<String, String> {
 
 	@Override
 	public void persist(String key, String value) {
-		this.cache.put(key, value);
-		this.persistCache();
+		if (cache.containsKey(value)) {
+			LOGGER.warn("Value '"+value+"' is already present with the binding '" + cache.get(value) + "'.");
+		}
+		else {
+			this.cache.put(key, value);
+			this.persistCache();
+		}
 	}
 
 	@Override
@@ -61,7 +64,7 @@ public class FilterRepository implements Repository<String, String> {
 	@Override
 	public Map<String, String> unmodifiable() {
 		if (this.cache.isEmpty()) {
-			LOGGER.warn("No filters defined.");
+			LOGGER.warn("Cache is empty.");
 		}
 
 		return Collections.unmodifiableMap(this.cache);

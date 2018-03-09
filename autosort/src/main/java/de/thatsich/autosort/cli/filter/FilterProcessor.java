@@ -2,7 +2,7 @@ package de.thatsich.autosort.cli.filter;
 
 import de.thatsich.autosort.cli.BaseProcessor;
 import de.thatsich.autosort.cli.HelpPrinter;
-import de.thatsich.autosort.cli.Repository;
+import de.thatsich.data.Repository;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;

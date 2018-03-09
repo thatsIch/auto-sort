@@ -1,7 +1,7 @@
 package de.thatsich.autosort.cli.alias;
 
 import de.thatsich.autosort.cli.Persistence;
-import de.thatsich.autosort.cli.Repository;
+import de.thatsich.data.Repository;
 import de.thatsich.map.MapConverterService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

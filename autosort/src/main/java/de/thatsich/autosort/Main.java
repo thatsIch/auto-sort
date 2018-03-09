@@ -7,7 +7,8 @@ import de.thatsich.autosort.cli.alias.AliasRepository;
 import de.thatsich.autosort.cli.alias.PathConverterService;
 import de.thatsich.autosort.cli.def.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.filter.FilterProcessor;
-import de.thatsich.autosort.cli.filter.FilterRepository;
+import de.thatsich.data.Repository;
+import de.thatsich.data.SimpleRepository;
 import de.thatsich.map.URLEncoderConverterService;
 import de.thatsich.unification.PathUnifiacationService;
 import org.apache.commons.cli.*;
@@ -48,7 +49,7 @@ public class Main {
 		final URLEncoderConverterService converterService = new URLEncoderConverterService();
 		final AliasRepository aliasRepository = new AliasRepository(aliasPersistence, pathConverterService, converterService);
 		aliasRepository.initialize();
-		final FilterRepository filterRepository = new FilterRepository(filterPersistence, converterService);
+		final Repository<String, String> filterRepository = new SimpleRepository(filterPersistence, converterService);
 		filterRepository.initialize();
 
 		options.addOption("d", "directory", true, "destination which to sort. can override the default-directory set from 'default <directory>'.");
