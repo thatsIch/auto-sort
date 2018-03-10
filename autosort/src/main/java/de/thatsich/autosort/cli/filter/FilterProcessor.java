@@ -71,14 +71,14 @@ public class FilterProcessor extends BaseProcessor<Void> {
 		return null;
 	}
 
-	private boolean tryAdding(String subCommand, String[] aliasArgs) {
+	private boolean tryAdding(String subCommand, String[] filterArgs) {
 		if (subCommand.equals(getAddArgs().get(0))) {
-			final String regex = aliasArgs[1];
+			final String regex = filterArgs[1];
 			final Optional<String> binding = this.repository.find(regex);
 			if (binding.isPresent()) {
 				LOGGER.warn("Filter '"+regex+"' is already present with the binding '" + binding.get() + "'.");
 			} else {
-				final String destination = aliasArgs[2];
+				final String destination = filterArgs[2];
 
 				this.repository.persist(regex, destination);
 			}
@@ -89,9 +89,9 @@ public class FilterProcessor extends BaseProcessor<Void> {
 		return false;
 	}
 
-	private boolean tryDeleting(String subCommand, String[] aliasArgs) {
+	private boolean tryDeleting(String subCommand, String[] filterArgs) {
 		if (subCommand.equals(getDelArgs().get(0))) {
-			final String regex = aliasArgs[1];
+			final String regex = filterArgs[1];
 
 			final Optional<String> binding = this.repository.remove(regex);
 			if (!binding.isPresent()) {
