@@ -7,6 +7,7 @@ import de.thatsich.autosort.cli.alias.AliasRepository;
 import de.thatsich.autosort.cli.alias.PathConverterService;
 import de.thatsich.autosort.cli.def.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.filter.FilterProcessor;
+import de.thatsich.autosort.cli.help.HelpProcessor;
 import de.thatsich.autosort.cli.sort.SortingProcessor;
 import de.thatsich.autosort.cli.sort.TargetSuggester;
 import de.thatsich.data.Repository;
@@ -70,15 +71,12 @@ public class Main {
 		final SortingProcessor sortingProcessor = new SortingProcessor(unifiacationService, aliasRepository, filterRepository, targetSuggester);
 		options.addOption(sortingProcessor.constructOption());
 
-		options.addOption("h", "help", false, "displays help. overrides any other command.");
+		final HelpProcessor helpProcessor = new HelpProcessor(helpPrinter);
+		options.addOption(helpProcessor.constructOption());
 
 		final CommandLine cl = argsParser.parse(options, args);
 
-		if (cl.hasOption("h")) {
-			helpPrinter.printOptions(options);
-
-			return;
-		}
+		helpProcessor.processCommandLineOptions(cl, options);
 
 		// we either have a default directory or set manually a directory else we use the current working directory as a meaningful default
 
