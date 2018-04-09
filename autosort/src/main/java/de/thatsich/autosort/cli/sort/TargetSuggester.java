@@ -1,4 +1,4 @@
-package de.thatsich.autosort;
+package de.thatsich.autosort.cli.sort;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * @version 1.0-SNAPSHOT 15.01.2018
  * @since 1.0-SNAPSHOT
  */
-class TargetSuggester {
+public class TargetSuggester {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 

@@ -7,6 +7,8 @@ import de.thatsich.autosort.cli.alias.AliasRepository;
 import de.thatsich.autosort.cli.alias.PathConverterService;
 import de.thatsich.autosort.cli.def.DefaultDirectoryProcessor;
 import de.thatsich.autosort.cli.filter.FilterProcessor;
+import de.thatsich.autosort.cli.sort.SortingProcessor;
+import de.thatsich.autosort.cli.sort.TargetSuggester;
 import de.thatsich.data.Repository;
 import de.thatsich.data.SimpleRepository;
 import de.thatsich.map.URLEncoderConverterService;
@@ -63,6 +65,11 @@ public class Main {
 		final FilterProcessor filterProcessor = new FilterProcessor(helpPrinter, filterRepository);
 		options.addOption(filterProcessor.constructOption());
 
+		final PathUnifiacationService unifiacationService = new PathUnifiacationService();
+		final TargetSuggester targetSuggester = new TargetSuggester();
+		final SortingProcessor sortingProcessor = new SortingProcessor(unifiacationService, aliasRepository, filterRepository, targetSuggester);
+		options.addOption(sortingProcessor.constructOption());
+
 		options.addOption("h", "help", false, "displays help. overrides any other command.");
 
 		final CommandLine cl = argsParser.parse(options, args);
@@ -88,19 +95,12 @@ public class Main {
 			final String defaultDirectory = preferences.get("default-directory", suggestion);
 			workingDirectory = Paths.get(defaultDirectory);
 		}
-		LOGGER.info("Processing directory: " + workingDirectory);
 
 		aliasProcessor.processCommandLine(cl);
 		filterProcessor.processCommandLine(cl);
-
-		final PathUnifiacationService unifiacationService = new PathUnifiacationService();
-		final TargetSuggester targetSuggester = new TargetSuggester();
-		final Processor processor = new Processor(unifiacationService, aliasRepository, filterRepository, targetSuggester);
-		processor.process(workingDirectory);
+		sortingProcessor.processCommandLineInWorkingDirectory(cl, workingDirectory);
 
 //		boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean(). getInputArguments().toString().contains("-agentlib:jdwp");
 //		LOGGER.info(isDebug);
-
-		LOGGER.info("Finished auto-sorting.");
 	}
 }

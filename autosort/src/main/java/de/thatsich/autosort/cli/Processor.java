@@ -8,5 +8,5 @@ import java.io.UnsupportedEncodingException;
 public interface Processor<T> {
 	Option constructOption();
 
-	T processCommandLine(CommandLine cl) throws UnsupportedEncodingException;
+	T processCommandLine(CommandLine cl);
 }

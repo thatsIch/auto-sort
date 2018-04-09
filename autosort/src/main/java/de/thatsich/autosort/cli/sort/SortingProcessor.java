@@ -1,8 +1,10 @@
-package de.thatsich.autosort;
+package de.thatsich.autosort.cli.sort;
 
 import de.thatsich.autosort.cli.alias.AliasRepository;
 import de.thatsich.data.Repository;
 import de.thatsich.unification.PathUnifiacationService;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Processor {
+public class SortingProcessor {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -25,14 +27,14 @@ public class Processor {
 	private final Repository<String, String> filterRepository;
 	private final TargetSuggester targetSuggester;
 
-	Processor(PathUnifiacationService unifiacationService, AliasRepository aliasRepository, Repository<String, String> filterRepository, TargetSuggester targetSuggester) {
+	public SortingProcessor(PathUnifiacationService unifiacationService, AliasRepository aliasRepository, Repository<String, String> filterRepository, TargetSuggester targetSuggester) {
 		this.unifiacationService = unifiacationService;
 		this.aliasRepository = aliasRepository;
 		this.filterRepository = filterRepository;
 		this.targetSuggester = targetSuggester;
 	}
 
-	public void process(Path workingDirectory) throws IOException {
+	private void sort(Path workingDirectory) throws IOException {
 		final List<Path> files = Files.walk(workingDirectory, 1)
 				.filter(Files::isRegularFile)
 				.collect(Collectors.toList());
@@ -123,4 +125,21 @@ public class Processor {
 
 		return path;
 	}
+
+	public Option constructOption() {
+		return Option.builder("s")
+				.longOpt("sort")
+				.desc("applies filters and alias to sort files in the set working directory.")
+				.hasArg(false)
+				.build();
+	}
+
+	public void processCommandLineInWorkingDirectory(CommandLine cl, Path workingDirectory) throws IOException {
+		if (cl.hasOption("sort")) {
+			LOGGER.info("Processing directory: " + workingDirectory);
+			this.sort(workingDirectory);
+			LOGGER.info("Finished auto-sorting.");
+		}
+	}
+
 }
